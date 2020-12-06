@@ -1,6 +1,9 @@
 package projekt.auto.mcu.constants
 
+import androidx.annotation.RequiresApi
+
 @Suppress("unused")
+@RequiresApi(28)
 class KswConstants {
 
     object BtSubCommand {
