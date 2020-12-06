@@ -1,9 +1,6 @@
 package projekt.auto.mcu.ksw.serial;
 
 public interface McuEvent {
-    boolean equals(String logcatMsg);
-    boolean equals(int cmdType, byte[] data);
-
     McuEvent SWITCHED_TO_OEM = new McuEvent() {
         @Override
         public boolean equals(String logcatMsg) {
@@ -12,10 +9,9 @@ public interface McuEvent {
 
         @Override
         public boolean equals(int cmdType, byte[] data) {
-            return cmdType == 0xA1 && data.length==2 && data[0]==0x1A && data[1]==0x2;
+            return cmdType == 0xA1 && data.length == 2 && data[0] == 0x1A && data[1] == 0x2;
         }
     };
-
     McuEvent SWITCHED_TO_ARM = new McuEvent() {
         @Override
         public boolean equals(String logcatMsg) {
@@ -24,7 +20,11 @@ public interface McuEvent {
 
         @Override
         public boolean equals(int cmdType, byte[] data) {
-            return cmdType == 0xA1 && data.length==2 && data[0]==0x1A && data[1]==0x1;
+            return cmdType == 0xA1 && data.length == 2 && data[0] == 0x1A && data[1] == 0x1;
         }
     };
+
+    boolean equals(String logcatMsg);
+
+    boolean equals(int cmdType, byte[] data);
 }

@@ -1,25 +1,22 @@
 package projekt.auto.mcu.ksw.serial;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 
 public class LogcatReader {
+    private final McuAction callback;
     private Thread readerThread;
     private Process logProc;
-    private McuAction callback;
     private boolean isReading = false;
 
     public LogcatReader(McuAction callbackEvent) {
         this.callback = callbackEvent;
     }
 
-    public void startReading(){
-        if (isReading)
-            return;
+    public void startReading() {
+        if (isReading) return;
         readerThread = new Thread(() -> {
             try {
                 Runtime.getRuntime().exec("logcat -c\n");
@@ -30,10 +27,10 @@ public class LogcatReader {
             }
             BufferedReader bufRead = new BufferedReader(new InputStreamReader(logProc.getInputStream()));
             String line = "";
-            try{
-                while (isReading){
-                    try{
-                        while (bufRead.ready()){
+            try {
+                while (isReading) {
+                    try {
+                        while (bufRead.ready()) {
                             line = bufRead.readLine();
                             if (line.contains("--Mcu toString-----")) {
                                 line = line.substring(line.lastIndexOf('[') + 2, line.lastIndexOf(']') - 1);
@@ -45,21 +42,19 @@ public class LogcatReader {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }
-                    catch (InterruptedIOException e){
+                    } catch (InterruptedIOException e) {
                         break;
                     }
                 }
 
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         readerThread.start();
     }
 
-    public void stopReading(){
+    public void stopReading() {
         logProc.destroy();
         isReading = false;
     }

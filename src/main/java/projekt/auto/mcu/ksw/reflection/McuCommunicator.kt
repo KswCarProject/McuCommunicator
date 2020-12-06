@@ -3,6 +3,7 @@ package projekt.auto.mcu.ksw.reflection
 import android.annotation.SuppressLint
 import dalvik.system.DexClassLoader
 
+@Deprecated("Reflection methods for MCU communication are currently very limited, we will be using the Serial methods for more flexibility")
 object McuCommunicator {
 
     /**
