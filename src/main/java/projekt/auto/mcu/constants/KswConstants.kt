@@ -1,7 +1,7 @@
-package projekt.auto.mcu.ksw
+package projekt.auto.mcu.constants
 
 @Suppress("unused")
-class McuConstants {
+class KswConstants {
 
     object BtSubCommand {
         const val AUTO_CONN = 106
