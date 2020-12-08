@@ -17,11 +17,31 @@ interface McuCommands {
     val update: Boolean
 
     /**
+     * Sets the volume of one source.
+     * @param mode Available values: 0x1 - ARM, 0x2 - OEM
+     * @param stream Available values: 0x1 - MediaVolume, 0x2 - PhoneVolume, 0x3 - NaviVolume
+     * @param volume Enter a volume from 0 to 40 (0x0 - 0x28)
+     * @param isSynced Available value: 0x0 - Is not in sycn!, 0x1 - Is in sync. Probably keep the inSync on!
+     */
+    class SetVolume(private val mode: Byte,
+                    private val stream: Byte,
+                    private val volume: Byte,
+                    private val isSynced: Byte): McuCommands {
+        override val command: Int
+            get() = 0x62
+        override val data: ByteArray
+            get() = byteArrayOf(0x0, mode, stream, volume, isSynced)
+        override val update: Boolean
+            get() = false
+    }
+
+    /**
      * Sets the status of one source.
      * Requires more info!
      * @param volumeType Allowed values for Volume Type: 0x1, 0x2, 0x3, 0x21
      * @param volume Volume can go from 0 to 40 (0x0-0x28)
      */
+    @Deprecated("Newer Firmwares use SetVolume instead")
     class SetSoundStatus(private val muteMode: MUTE_MODE,
                          private val deviceMode: SOUND_SRC_TYPE,
                          private val volumeType: Byte,
