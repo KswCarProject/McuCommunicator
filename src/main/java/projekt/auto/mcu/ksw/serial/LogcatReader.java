@@ -34,7 +34,22 @@ public class LogcatReader {
                             line = bufRead.readLine();
                             if (line.contains("--Mcu toString-----")) {
                                 line = line.substring(line.lastIndexOf('[') + 2, line.lastIndexOf(']') - 1);
-                                callback.update(line);
+
+                                line = line.replaceAll("\\s+", "");
+                                String[] splitString = line.split("-", 2);
+                                String commandStr = splitString[0].substring(splitString[0].indexOf(":")+1);
+                                int command = Integer.parseInt(commandStr,16);
+                                String byteStrs = splitString[1].substring(splitString[1].indexOf(":")+1);
+                                String[] dataStrs = byteStrs.split("-");
+                                byte[] data = new byte[dataStrs.length];
+                                for (int i=0; i<data.length; i++) {
+                                    data[i] = Byte.parseByte(dataStrs[i], 16);
+                                }
+                                System.out.println(command);
+                                for (Byte b : data)
+                                    System.out.println(b);
+
+                                callback.update(command, data);
                             }
                         }
                         try {

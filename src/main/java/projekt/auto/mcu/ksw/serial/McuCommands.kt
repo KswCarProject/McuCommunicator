@@ -5,9 +5,12 @@ import projekt.auto.mcu.ksw.serial.enums.*
 /**
  * @author Snaggly
  * Listed are all the current known commands and functions to control the KSW MCU.
- * Found by VincentZ4
+ * Most of them were found by VincentZ4 as seen here:
+ * https://f30.bimmerpost.com/forums/showpost.php?p=26332187&postcount=3436
  *
- * This is still incomplete! Certain commands are yet to be reverse engineered or tracebacked.
+ * Those that were not taken from the above linked Doc have been marked.
+ *
+ * This is still incomplete! Certain commands are yet to be reverse engineered or trace backed.
  * Many commands listed here are also yet to be researched.
  */
 
@@ -17,6 +20,7 @@ interface McuCommands {
     val update: Boolean
 
     /**
+     * @author Snaggly
      * Sets the volume of one source.
      * @param mode Available values: 0x1 - ARM, 0x2 - OEM
      * @param stream Available values: 0x1 - MediaVolume, 0x2 - PhoneVolume, 0x3 - NaviVolume

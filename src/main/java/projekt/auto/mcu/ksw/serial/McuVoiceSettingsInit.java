@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 import dalvik.system.DexClassLoader;
 
+@Deprecated
 public class McuVoiceSettingsInit {
     @SuppressLint("PrivateApi")
     private final Class<?> PowerManagerApp = new DexClassLoader(
