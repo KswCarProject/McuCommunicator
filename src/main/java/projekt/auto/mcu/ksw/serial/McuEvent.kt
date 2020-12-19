@@ -19,25 +19,12 @@ interface McuEvent {
     companion object{
         /**
          * @author Snaggly
-         * This event is raised when end user switches to OEM Radio be it by hardware button
-         * or programmatically via an McuCommand.
+         * Before checking any events prior, make sure to see if it's an CanEvent!
          */
-        val SWITCHED_TO_OEM: McuEvent
+        val IsCanEventType: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return cmdType == 0xA1 && data[0] == 0x1A.toByte() && data[1] == 0x2.toByte()
-                }
-            }
-
-        /**
-         * @author Snaggly
-         * This event is raised when end user taps or holds the Menu button
-         * to switch back to ARM.
-         */
-        val SWITCHED_TO_ARM: McuEvent
-            get() = object: McuEvent {
-                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return cmdType == 0xA1 && data[0] == 0x1A.toByte() && data[1] == 0x1.toByte()
+                    return cmdType == 0xA1
                 }
             }
 
@@ -49,7 +36,42 @@ interface McuEvent {
         val CarDataReceived: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return cmdType == 0xA1 && data[0] == 0x19.toByte()
+                    return data[0] == 0x19.toByte()
+                }
+            }
+
+        /**
+         * @author Snaggly
+         * Use this before checking any ScreenSwitch events.
+         */
+        val IsScreenSwitchEvent: McuEvent
+            get() = object: McuEvent {
+                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
+                    return data[0] == 0x1A.toByte()
+                }
+            }
+
+        /**
+         * @author Snaggly
+         * This event is raised when end user switches to OEM Radio be it by hardware button
+         * or programmatically via an McuCommand.
+         */
+        val SWITCHED_TO_OEM: McuEvent
+            get() = object: McuEvent {
+                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
+                    return data[1] == 0x2.toByte()
+                }
+            }
+
+        /**
+         * @author Snaggly
+         * This event is raised when end user taps or holds the Menu button
+         * to switch back to ARM.
+         */
+        val SWITCHED_TO_ARM: McuEvent
+            get() = object: McuEvent {
+                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
+                    return data[1] == 0x1.toByte()
                 }
             }
 
@@ -61,7 +83,7 @@ interface McuEvent {
         val AnyCarButtonPressed: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return cmdType == 0xA1 && data[0] == 0x17.toByte()
+                    return data[0] == 0x17.toByte()
                 }
             }
 
@@ -380,12 +402,22 @@ interface McuEvent {
             }
 
         /**
+         * @author Snaggle
+         */
+        val IsParkingBeltEvent: McuEvent
+            get() = object: McuEvent {
+                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
+                    return data[0] == 0x10.toByte()
+                }
+            }
+
+        /**
          * @author VincentZ4
          */
         val ParkingBreakReleased: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x10.toByte() && data[1]==0x0.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x0.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -395,7 +427,7 @@ interface McuEvent {
         val ParkingBreakOnAndBeltOff: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x10.toByte() && data[1]==0x8.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x8.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -405,7 +437,7 @@ interface McuEvent {
         val BeltOn: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x10.toByte() && data[1]==0x8.toByte() && data[2] == 0x1.toByte()
+                    return data[1]==0x8.toByte() && data[2] == 0x1.toByte()
                 }
             }
 
@@ -416,7 +448,17 @@ interface McuEvent {
         val ParkingBreakReleasedAndBeltOn: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x10.toByte() && data[1]==0x0.toByte() && data[2] == 0x1.toByte()
+                    return data[1]==0x0.toByte() && data[2] == 0x1.toByte()
+                }
+            }
+
+        /**
+         * @author Snaggle
+         */
+        val IsDoorEvent: McuEvent
+            get() = object: McuEvent {
+                override fun equals(cmdType: Int, data: ByteArray) : Boolean {
+                    return data[0] == 0x12.toByte()
                 }
             }
 
@@ -426,7 +468,7 @@ interface McuEvent {
         val AllDoorsClosed: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x8.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x8.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -436,7 +478,7 @@ interface McuEvent {
         val FrontLeftDoorOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x18.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x18.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -446,7 +488,7 @@ interface McuEvent {
         val FrontRightDoorOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x28.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x28.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -456,7 +498,7 @@ interface McuEvent {
         val FrontDoorsOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x38.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x38.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -466,7 +508,7 @@ interface McuEvent {
         val TrunkOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0xc.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0xc.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -476,7 +518,7 @@ interface McuEvent {
         val TrunkAndLeftDoorOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x1c.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x1c.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -486,7 +528,7 @@ interface McuEvent {
         val TrunkAndRightDoorOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x2c.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x2c.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -496,7 +538,7 @@ interface McuEvent {
         val TrunkAndDoorsOpened: McuEvent
             get() = object: McuEvent {
                 override fun equals(cmdType: Int, data: ByteArray) : Boolean {
-                    return data[0] == 0x12.toByte() && data[1]==0x3c.toByte() && data[2] == 0x0.toByte()
+                    return data[1]==0x3c.toByte() && data[2] == 0x0.toByte()
                 }
             }
 
@@ -519,5 +561,73 @@ interface McuEvent {
                     return cmdType==0x11 && data[0] == 0x3.toByte() && data[1]==0x0.toByte()
                 }
             }
+
+        /**
+         * @author Snaggly
+         * Returns which McuEvent has been raised. The point is to have a way to quickly determine the event type.
+         * Currently it's pointless. Need to rewrite the entire structure above me with maybe ENUMs?
+         */
+        fun getMcuEvent(cmdType: Int, data: ByteArray): McuEvent? {
+            if ( IsCanEventType.equals(cmdType, data) ) {
+                if (AnyCarButtonPressed.equals(cmdType, data)) {
+                    if (iDriveKnobTurnClockwise.equals(cmdType,data)) return iDriveKnobTurnClockwise
+                    if (iDriveKnobTurnCounterClockwise.equals(cmdType,data)) return iDriveKnobTurnCounterClockwise
+                    if (iDriveKnobTiltDown.equals(cmdType,data)) return iDriveKnobTiltDown
+                    if (iDriveKnobTiltDownRelease.equals(cmdType,data)) return iDriveKnobTiltDownRelease
+                    if (iDriveKnobTiltLeft.equals(cmdType,data)) return iDriveKnobTiltLeft
+                    if (iDriveKnobTiltLeftRelease.equals(cmdType,data)) return iDriveKnobTiltLeftRelease
+                    if (iDriveKnobTiltRight.equals(cmdType,data)) return iDriveKnobTiltRight
+                    if (iDriveKnobTiltRightRelease.equals(cmdType,data)) return iDriveKnobTiltRightRelease
+                    if (iDriveKnobTiltUp.equals(cmdType,data)) return iDriveKnobTiltUp
+                    if (iDriveKnobTiltUpRelease.equals(cmdType,data)) return iDriveKnobTiltUpRelease
+                    if (iDriveKnobPressed.equals(cmdType,data)) return iDriveKnobPressed
+                    if (iDriveKnobReleased.equals(cmdType,data)) return iDriveKnobReleased
+                    if (iDriveMenuButtonPressed.equals(cmdType,data)) return iDriveMenuButtonPressed
+                    if (iDriveMenuButtonReleased.equals(cmdType,data)) return iDriveMenuButtonReleased
+                    if (iDriveBackButtonPress.equals(cmdType,data)) return iDriveBackButtonPress
+                    if (iDriveBackButtonRelease.equals(cmdType,data)) return iDriveBackButtonRelease
+                    if (iDriveNavigationButtonPressed.equals(cmdType,data)) return iDriveNavigationButtonPressed
+                    if (iDriveNavigationButtonReleased.equals(cmdType,data)) return iDriveNavigationButtonReleased
+                    if (iDriveOptionsButtonPress.equals(cmdType,data)) return iDriveOptionsButtonPress
+                    if (iDriveOptionsButtonRelease.equals(cmdType,data)) return iDriveOptionsButtonRelease
+                    if (iDriveTelephoneButtonLongPress.equals(cmdType,data)) return iDriveTelephoneButtonLongPress
+                    if (iDriveTelephoneButtonLongRelease.equals(cmdType,data)) return iDriveTelephoneButtonLongRelease
+                    if (SteeringWheelTelButtonPressed.equals(cmdType,data)) return SteeringWheelTelButtonPressed
+                    if (SteeringWheelTelButtonReleased.equals(cmdType,data)) return SteeringWheelTelButtonReleased
+                    if (MediaNextButtonPressed.equals(cmdType,data)) return MediaNextButtonPressed
+                    if (MediaNextButtonReleased.equals(cmdType,data)) return MediaNextButtonReleased
+                    if (MediaPreviousButtonPressed.equals(cmdType,data)) return MediaPreviousButtonPressed
+                    if (MediaPreviousButtonReleased.equals(cmdType,data)) return MediaPreviousButtonReleased
+                }
+                else if (IsScreenSwitchEvent.equals(cmdType, data)){
+                    if (SWITCHED_TO_ARM.equals(cmdType, data)) return SWITCHED_TO_ARM
+                    if (SWITCHED_TO_OEM.equals(cmdType, data)) return SWITCHED_TO_OEM
+                }
+                else if (CarDataReceived.equals(cmdType, data)) return CarDataReceived
+                else if (IsParkingBeltEvent.equals(cmdType, data)){
+                    if (ParkingBreakReleased.equals(cmdType, data)) return ParkingBreakReleased
+                    if (ParkingBreakOnAndBeltOff.equals(cmdType, data)) return ParkingBreakOnAndBeltOff
+                    if (BeltOn.equals(cmdType, data)) return BeltOn
+                    if (ParkingBreakReleasedAndBeltOn.equals(cmdType, data)) return ParkingBreakReleasedAndBeltOn
+                }
+                else if (IsDoorEvent.equals(cmdType, data)) {
+                    if (AllDoorsClosed.equals(cmdType, data)) return AllDoorsClosed
+                    if (FrontLeftDoorOpened.equals(cmdType, data)) return FrontLeftDoorOpened
+                    if (FrontRightDoorOpened.equals(cmdType, data)) return FrontRightDoorOpened
+                    if (FrontDoorsOpened.equals(cmdType, data)) return FrontDoorsOpened
+                    if (TrunkOpened.equals(cmdType, data)) return TrunkOpened
+                    if (TrunkAndLeftDoorOpened.equals(cmdType, data)) return TrunkAndLeftDoorOpened
+                    if (TrunkAndRightDoorOpened.equals(cmdType, data)) return TrunkAndRightDoorOpened
+                    if (TrunkAndDoorsOpened.equals(cmdType, data)) return TrunkAndDoorsOpened
+                }
+            } else {
+                if ( ParkingRadarViewOn.equals(cmdType, data) )
+                    return ParkingRadarViewOn
+                if ( ParkingRadarViewOff.equals(cmdType, data) )
+                    return ParkingRadarViewOff
+            }
+
+            return null
+        }
     }
 }

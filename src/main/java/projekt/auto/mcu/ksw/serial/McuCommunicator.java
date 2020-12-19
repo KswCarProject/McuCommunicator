@@ -1,5 +1,8 @@
 package projekt.auto.mcu.ksw.serial;
 
+import android.util.Log;
+
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,6 +17,10 @@ public class McuCommunicator {
     private McuAction handler;
     private LogcatReader readerThread;
     private byte[] frame;
+
+    interface McuAction {
+        void update(int cmdType, byte[] data);
+    }
 
     private McuCommunicator() {
 
@@ -37,25 +44,29 @@ public class McuCommunicator {
 
     private void startReadingFromIO() throws FileNotFoundException {
         final AtomicReference<Exception> exception = new AtomicReference<>();
-        FileInputStream fis = new FileInputStream("/dev/ttyMSM1");
+        DataInputStream fis = new DataInputStream(new FileInputStream("/dev/ttyMSM1"));
         isReading.set(true);
         new Thread(() -> {
-            byte[] buffer = new byte[128];
             try {
                 while (isReading.get()) {
-                    if ((fis.read() & 0xFF) != 0xf2)
-                        continue;
-                    fis.read();
-                    int cmdType = fis.read();
-                    int length = fis.read();
-                    byte[] data = new byte[length];
-                    for (int i = 0; i < length; i++) {
-                        data[i] = (byte) fis.read();
+                    if (fis.available() > 5) {
+                        if (fis.readByte() != 0xf2)
+                            continue;
+                        fis.readByte();
+                        int cmdType = fis.readByte();
+                        int length = fis.readByte();
+                        byte[] data = new byte[length];
+                        for (int i = 0; i < length; i++) {
+                            data[i] = fis.readByte();
+                        }
+                        if (fis.readByte() == checkSum(cmdType, data))
+                            handler.update(cmdType, data);
                     }
-                    if (fis.read() == checkSum(cmdType, data))
-                        handler.update(cmdType, data);
                 }
+                fis.close();
             } catch (Exception innerE) {
+                isReading.set(false);
+                Log.d("Snaggle", "Exception in IO-Reader" + innerE);
                 exception.set(innerE);
             }
         }).start();
