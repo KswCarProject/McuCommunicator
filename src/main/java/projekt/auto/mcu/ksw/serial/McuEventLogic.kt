@@ -1,10 +1,13 @@
 package projekt.auto.mcu.ksw.serial
 
-class McuEventLogic {
+interface McuEventLogic {
+    fun getMcuEvent(cmdType: Int, data: ByteArray)
+
     companion object {
         /**
          * @author Snaggly
          * Returns which McuEvent has been raised. The point is to have a way to quickly determine the event type.
+         * This is a sample. Remove any unneeded events for efficiency!
          */
         fun getMcuEvent(cmdType: Int, data: ByteArray): McuEvent? {
             if (cmdType==0xA1) {
@@ -27,6 +30,8 @@ class McuEventLogic {
                     if (data[1] == 0x18.toByte() && data[2] == 0x1.toByte()) return McuEvent.MediaNextButtonReleased
                     if (data[1] == 0x17.toByte() && data[2] == 0x0.toByte()) return McuEvent.MediaPreviousButtonPressed
                     if (data[1] == 0x17.toByte() && data[2] == 0x1.toByte()) return McuEvent.MediaPreviousButtonReleased
+                    if (data[1] == 0x14.toByte() && data[2] == 0x1.toByte()) return McuEvent.VoiceCommandPress
+                    if (data[1] == 0x14.toByte() && data[2] == 0x0.toByte()) return McuEvent.VoiceCommandRelease
                     if (data[1] == 0x8.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveMenuButtonPressed
                     if (data[1] == 0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.iDriveMenuButtonReleased
                     if (data[1] == 0xc.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveBackButtonPress

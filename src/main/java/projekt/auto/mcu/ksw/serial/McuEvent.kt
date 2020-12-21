@@ -236,6 +236,18 @@ enum class McuEvent {
 
     /**
      * @author Snaggle
+     * When the user presses the voice command button on the steering wheel.
+     */
+    VoiceCommandPress,
+
+    /**
+     * @author Snaggle
+     * When the user presses the voice command button on the steering wheel.
+     */
+    VoiceCommandRelease,
+
+    /**
+     * @author Snaggle
      */
     IsParkingBeltEvent,
 
