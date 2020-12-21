@@ -6,12 +6,12 @@ import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 
 public class LogcatReader {
-    private final McuAction callback;
+    private final McuCommunicator.McuAction callback;
     private Thread readerThread;
     private Process logProc;
     private boolean isReading = false;
 
-    public LogcatReader(McuAction callbackEvent) {
+    public LogcatReader(McuCommunicator.McuAction callbackEvent) {
         this.callback = callbackEvent;
     }
 
