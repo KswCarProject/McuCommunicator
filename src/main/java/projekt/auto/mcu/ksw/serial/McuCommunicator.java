@@ -18,7 +18,7 @@ public class McuCommunicator {
     private LogcatReader readerThread;
     private byte[] frame;
 
-    interface McuAction {
+    public interface McuAction {
         void update(int cmdType, byte[] data);
     }
 
