@@ -644,6 +644,33 @@ interface McuCommands {
          * Default=Off
          * Needs more info!
          */
+        val SYS_SCREEN_ON: McuCommands = object : McuCommands {
+            override val command: Int
+                get() = 0x6C
+            override val data: ByteArray
+                get() = byteArrayOf(2, 1)
+            override val update: Boolean
+                get() = false
+        }
+
+        /**
+         * Default=Off
+         * Needs more info!
+         * Setting this will turn the screen off, touch responses will not work
+         */
+        val SYS_SCREEN_OFF: McuCommands = object : McuCommands {
+            override val command: Int
+                get() = 0x6C
+            override val data: ByteArray
+                get() = byteArrayOf(2, 0)
+            override val update: Boolean
+                get() = false
+        }
+
+        /**
+         * Default=Off
+         * Needs more info!
+         */
         val SYS_BLACKSCREEN_Off: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x6A
