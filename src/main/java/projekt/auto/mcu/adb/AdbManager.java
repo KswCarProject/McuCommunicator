@@ -1,6 +1,7 @@
 package projekt.auto.mcu.adb;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.TrafficStats;
 
 import org.apache.commons.codec.binary.Base64;
@@ -43,12 +44,12 @@ public class AdbManager {
         return c;
     }
 
-    public static boolean executeCommands(Activity activity, String[] commands) {
+    public static boolean executeCommands(Context context, String[] commands) {
         final AtomicReference<Exception> exception = new AtomicReference<>();
         Thread thread = new Thread(() -> {
             try {
                 TrafficStats.setThreadStatsTag((int) Thread.currentThread().getId());
-                AdbCrypto adbCrypto = setupCrypto(activity.getFilesDir());
+                AdbCrypto adbCrypto = setupCrypto(context.getFilesDir());
                 Socket socket = new Socket();
                 socket.connect(new InetSocketAddress("localhost", 5555), 5000);
                 AdbConnection adbConnection = AdbConnection.create(socket, adbCrypto);
