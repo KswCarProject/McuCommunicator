@@ -1,9 +1,13 @@
 package projekt.auto.mcu.ksw.serial;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+
+import projekt.auto.mcu.BuildConfig;
 
 public class LogcatReader {
     private final McuCommunicator.McuAction callback;
@@ -44,9 +48,11 @@ public class LogcatReader {
                                 for (int i = 0; i < data.length; i++) {
                                     data[i] = Byte.parseByte(dataStrs[i], 16);
                                 }
-                                System.out.println(command);
+                                if (BuildConfig.DEBUG)
+                                    Log.d("LogcatReader", "Mcu reader: " + command);
                                 for (Byte b : data)
-                                    System.out.println(b);
+                                    if (BuildConfig.DEBUG)
+                                        Log.d("LogcatReader", "Mcu reader: " + b);
 
                                 callback.update(command, data);
                             }
