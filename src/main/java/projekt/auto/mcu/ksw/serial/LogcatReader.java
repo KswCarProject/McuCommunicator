@@ -7,7 +7,6 @@ import java.io.InterruptedIOException;
 
 public class LogcatReader {
     private final McuCommunicator.McuAction callback;
-    private Thread readerThread;
     private Process logProc;
     private boolean isReading = false;
 
@@ -17,7 +16,7 @@ public class LogcatReader {
 
     public void startReading() {
         if (isReading) return;
-        readerThread = new Thread(() -> {
+        Thread readerThread = new Thread(() -> {
             try {
                 Runtime.getRuntime().exec("logcat -c\n");
                 logProc = Runtime.getRuntime().exec("logcat KswMcuListener:I *:S");
@@ -37,12 +36,12 @@ public class LogcatReader {
 
                                 line = line.replaceAll("\\s+", "");
                                 String[] splitString = line.split("-", 2);
-                                String commandStr = splitString[0].substring(splitString[0].indexOf(":")+1);
-                                int command = Integer.parseInt(commandStr,16);
-                                String byteStrs = splitString[1].substring(splitString[1].indexOf(":")+1);
+                                String commandStr = splitString[0].substring(splitString[0].indexOf(":") + 1);
+                                int command = Integer.parseInt(commandStr, 16);
+                                String byteStrs = splitString[1].substring(splitString[1].indexOf(":") + 1);
                                 String[] dataStrs = byteStrs.split("-");
                                 byte[] data = new byte[dataStrs.length];
-                                for (int i=0; i<data.length; i++) {
+                                for (int i = 0; i < data.length; i++) {
                                     data[i] = Byte.parseByte(dataStrs[i], 16);
                                 }
                                 System.out.println(command);
@@ -70,7 +69,7 @@ public class LogcatReader {
     }
 
     public void stopReading() {
-        logProc.destroy();
+        if (logProc != null) logProc.destroy();
         isReading = false;
     }
 }
