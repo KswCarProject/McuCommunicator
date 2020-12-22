@@ -5,7 +5,7 @@ interface Protocol {
     /**
      * Sends an MCU command to the corresponding communication protocol
      */
-    fun sendMcuCommands(channel: Int, message: Int) : Boolean
+    fun sendMcuCommands(channel: Int, message: Int): Boolean
 
     /**
      * Obtains the current MCU version on the device

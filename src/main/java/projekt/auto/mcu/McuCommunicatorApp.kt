@@ -2,6 +2,7 @@ package projekt.auto.mcu
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
@@ -33,13 +34,14 @@ object McuCommunicatorApp {
     /**
      * First-hand preparations to start the MCU Communicator library
      */
-    fun initialize(activity: Activity): Protocol {
+    @Throws(ImproperMcuApiInitializationException::class)
+    fun initialize(context: Context): Protocol {
         when (mcuType) {
             MCU.KSW -> {
                 // First, we must check if we have the READ_LOGS permission, as we must be capable of reading the MCU thrown by the CenterService
-                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
-                    if (AdbManager.executeCommands(activity, arrayOf("pm grant ${activity.packageName} ${Manifest.permission.READ_LOGS}"))) {
-                        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
+                    if (AdbManager.executeCommands(context, arrayOf("pm grant ${context.packageName} ${Manifest.permission.READ_LOGS}"))) {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
                             throw ImproperMcuApiInitializationException("McuCommunicator was unable to grant itself READ_LOGS permission, perhaps you are using the wrong MCU type?")
                         }
                     } else {
