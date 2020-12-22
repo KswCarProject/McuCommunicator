@@ -1,6 +1,5 @@
 package projekt.auto.mcu.adb;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.TrafficStats;
 

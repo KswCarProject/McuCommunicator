@@ -30,7 +30,7 @@ interface McuCommands {
     class SetVolume(private val mode: Byte,
                     private val stream: Byte,
                     private val volume: Byte,
-                    private val isSynced: Byte): McuCommands {
+                    private val isSynced: Byte) : McuCommands {
         override val command: Int
             get() = 0x62
         override val data: ByteArray
@@ -49,7 +49,7 @@ interface McuCommands {
     class SetSoundStatus(private val muteMode: MUTE_MODE,
                          private val deviceMode: SOUND_SRC_TYPE,
                          private val volumeType: Byte,
-                         private val volume: Byte): McuCommands {
+                         private val volume: Byte) : McuCommands {
         override val command: Int
             get() = 0x62
         override val data: ByteArray
@@ -62,7 +62,7 @@ interface McuCommands {
      * Saves the statue of the built in Bluetooth device.
      * Requires more info!
      */
-    class SetBluetoothState(private val bluetoothState: BLUETOOTH_STATE): McuCommands{
+    class SetBluetoothState(private val bluetoothState: BLUETOOTH_STATE) : McuCommands {
         override val command: Int
             get() = 0x63
         override val data: ByteArray
@@ -86,11 +86,11 @@ interface McuCommands {
                   private val hour: Byte,
                   private val minute: Byte,
                   private val second: Byte,
-                  private val timeType: TIME_TYPE): McuCommands{
+                  private val timeType: TIME_TYPE) : McuCommands {
         override val command: Int
             get() = 0x64
         override val data: ByteArray
-            get() = byteArrayOf((realYear-2000).toByte(), month, day, hour, minute, second, timeType.value)
+            get() = byteArrayOf((realYear - 2000).toByte(), month, day, hour, minute, second, timeType.value)
         override val update: Boolean
             get() = false
     }
@@ -104,10 +104,10 @@ interface McuCommands {
      * @param paramode 0-6
      */
     class SetBrightness(private val brightness: Byte,
-                  private val saturation: Byte,
-                  private val contrast: Byte,
-                  private val chroma: Byte,
-                  private val paramode: Byte): McuCommands{
+                        private val saturation: Byte,
+                        private val contrast: Byte,
+                        private val chroma: Byte,
+                        private val paramode: Byte) : McuCommands {
         override val command: Int
             get() = 0x65
         override val data: ByteArray
@@ -120,7 +120,7 @@ interface McuCommands {
      * Switches to the desired sound/video stream.
      * For example while in ARM Setting Music Source to DVR opens the connected DVR video feed.
      */
-    class SetMusicSource(private val musicSource: SOUND_SRC_TYPE): McuCommands{
+    class SetMusicSource(private val musicSource: SOUND_SRC_TYPE) : McuCommands {
         override val command: Int
             get() = 0x67
         override val data: ByteArray
@@ -133,7 +133,7 @@ interface McuCommands {
      * Needs more info!
      * @param returnMode: 0x0 or 0x4
      */
-    class SetMusicSourceWithReturnMode(private val returnMode: Byte, private val musicSource: SOUND_SRC_TYPE): McuCommands{
+    class SetMusicSourceWithReturnMode(private val returnMode: Byte, private val musicSource: SOUND_SRC_TYPE) : McuCommands {
         override val command: Int
             get() = 0x68
         override val data: ByteArray
@@ -147,9 +147,9 @@ interface McuCommands {
      * @param clickStatus: 0x0 or 0x1
      */
     class ClickOnScreen(private val deviceMode: SOUND_SRC_TYPE,
-                        private val xCoordinate : Int,
-                        private val yCoordinate : Int,
-                        private val clickStatus: Byte): McuCommands{
+                        private val xCoordinate: Int,
+                        private val yCoordinate: Int,
+                        private val clickStatus: Byte) : McuCommands {
         override val command: Int
             get() = 0x6B
         override val data: ByteArray
@@ -167,7 +167,7 @@ interface McuCommands {
      * Needs more info!
      * @param brightness: Allowed values: 0-100
      */
-    class SetBrightnessLevel(private val brightness: Byte): McuCommands{
+    class SetBrightnessLevel(private val brightness: Byte) : McuCommands {
         override val command: Int
             get() = 0x6C
         override val data: ByteArray
@@ -179,7 +179,7 @@ interface McuCommands {
     /**
      * Needs more info! Probably has to do with when MCU posts new messages
      */
-    class SetMessageBeatTimer(private val mode: MESSAGE_BEAT_MODE): McuCommands{
+    class SetMessageBeatTimer(private val mode: MESSAGE_BEAT_MODE) : McuCommands {
         override val command: Int
             get() = 0x6F
         override val data: ByteArray
@@ -192,7 +192,7 @@ interface McuCommands {
      * Needs more info!
      * @param type probably 0-7 with 0 being turned off.
      */
-    class SetAHDCameraType(private val type: Byte): McuCommands{
+    class SetAHDCameraType(private val type: Byte) : McuCommands {
         override val command: Int
             get() = 0x70
         override val data: ByteArray
@@ -204,7 +204,7 @@ interface McuCommands {
     /**
      * Needs more info!
      */
-    class SetAUXPosition(private val position: Byte): McuCommands{
+    class SetAUXPosition(private val position: Byte) : McuCommands {
         override val command: Int
             get() = 0x70
         override val data: ByteArray
@@ -216,12 +216,14 @@ interface McuCommands {
     /**
      * Needs more info!
      */
-    class SwitchToDVDView(turnOn: Boolean): McuCommands{
+    class SwitchToDVDView(turnOn: Boolean) : McuCommands {
         private var value: Byte = 0
+
         init {
-            if(turnOn)
-                value=0x1
+            if (turnOn)
+                value = 0x1
         }
+
         override val command: Int
             get() = 0x71
         override val data: ByteArray
@@ -240,7 +242,7 @@ interface McuCommands {
     class SetEqualizer(private val low: Byte,
                        private val mid: Byte,
                        private val high: Byte,
-                       private val mode: Byte): McuCommands{
+                       private val mode: Byte) : McuCommands {
         override val command: Int
             get() = 0x73
         override val data: ByteArray
@@ -253,7 +255,7 @@ interface McuCommands {
      * Needs more info!
      * @param state 5, 6, 8, 9
      */
-    class SetCmdWheelState(private val state: Byte): McuCommands{
+    class SetCmdWheelState(private val state: Byte) : McuCommands {
         override val command: Int
             get() = 0x74
         override val data: ByteArray
@@ -265,11 +267,12 @@ interface McuCommands {
     /**
      * Needs more info!
      */
-    class SetFMRadio(turnOn: Boolean, private val frequency: Int): McuCommands{
+    class SetFMRadio(turnOn: Boolean, private val frequency: Int) : McuCommands {
         private var value: Byte = 0x2
+
         init {
-            if(turnOn)
-                value=0x1
+            if (turnOn)
+                value = 0x1
         }
 
         override val command: Int
@@ -287,14 +290,15 @@ interface McuCommands {
      */
     class SetBMTVal(private val interfaceStatus: INTERFACES,
                     backCarState: Boolean,
-                    backlight_isOff: Boolean): McuCommands{
+                    backlight_isOff: Boolean) : McuCommands {
         var backcarstate_val: Byte = 0x0
         var backlight_val: Byte = 0x00
+
         init {
-            if(backCarState)
-                backcarstate_val=0x1
+            if (backCarState)
+                backcarstate_val = 0x1
             if (backlight_isOff)
-                backlight_val=0x1
+                backlight_val = 0x1
         }
 
         override val command: Int
@@ -311,7 +315,7 @@ interface McuCommands {
     class SetDisplayType(private val ambientLight_R: Byte,
                          private val ambientLight_G: Byte,
                          private val ambientLight_B: Byte,
-                         private val cur_select_position: Byte): McuCommands{
+                         private val cur_select_position: Byte) : McuCommands {
         override val command: Int
             get() = 0x77
         override val data: ByteArray
@@ -325,12 +329,14 @@ interface McuCommands {
      * Needs more info!
      * @param mode 0-0x1c
      */
-    class SetVoiceControl(private val mode: Byte, turnOn: Boolean): McuCommands{
-        private var value : Byte = 0x0
+    class SetVoiceControl(private val mode: Byte, turnOn: Boolean) : McuCommands {
+        private var value: Byte = 0x0
+
         init {
             if (turnOn)
-                value=0x01
+                value = 0x01
         }
+
         override val command: Int
             get() = 0x77
         override val data: ByteArray
@@ -346,18 +352,20 @@ interface McuCommands {
     class SetVolumeInBackCar(cockboardAscendingStatus: Boolean,
                              airmaticStatus: Boolean,
                              auxiliaryRadarStatus: Boolean,
-                             private val instrumentBacklightValue: Byte): McuCommands{
-        private var cockboardAscendingStatus_value : Byte = 0x0
-        private var airmaticStatus_value : Byte = 0x0
-        private var auxiliaryRadarStatus_value : Byte = 0x0
+                             private val instrumentBacklightValue: Byte) : McuCommands {
+        private var cockboardAscendingStatus_value: Byte = 0x0
+        private var airmaticStatus_value: Byte = 0x0
+        private var auxiliaryRadarStatus_value: Byte = 0x0
+
         init {
             if (cockboardAscendingStatus)
-                cockboardAscendingStatus_value=0x01
+                cockboardAscendingStatus_value = 0x01
             if (airmaticStatus)
-                airmaticStatus_value=0x01
+                airmaticStatus_value = 0x01
             if (auxiliaryRadarStatus)
-                auxiliaryRadarStatus_value=0x01
+                auxiliaryRadarStatus_value = 0x01
         }
+
         override val command: Int
             get() = 0x77
         override val data: ByteArray
@@ -367,7 +375,7 @@ interface McuCommands {
     }
 
     companion object {
-        val Increase_AirCond_Temperature: McuCommands = object: McuCommands {
+        val Increase_AirCond_Temperature: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x60
             override val data: ByteArray
@@ -376,7 +384,7 @@ interface McuCommands {
                 get() = false
         }
 
-        val Decrease_AirCond_Temperature: McuCommands = object: McuCommands {
+        val Decrease_AirCond_Temperature: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x61
             override val data: ByteArray
@@ -388,7 +396,7 @@ interface McuCommands {
         /**
          * Note: Is not available anymore!
          */
-        val Activate_Front_Camera: McuCommands = object: McuCommands {
+        val Activate_Front_Camera: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x66
             override val data: ByteArray
@@ -400,7 +408,7 @@ interface McuCommands {
         /**
          * Note: Is not available anymore!
          */
-        val Close_Front_Camera: McuCommands = object: McuCommands {
+        val Close_Front_Camera: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x66
             override val data: ByteArray

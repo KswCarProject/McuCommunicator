@@ -18,10 +18,6 @@ public class McuCommunicator {
     private LogcatReader readerThread;
     private byte[] frame;
 
-    public interface McuAction {
-        void update(int cmdType, byte[] data);
-    }
-
     private McuCommunicator() {
 
     }
@@ -125,6 +121,10 @@ public class McuCommunicator {
         FileOutputStream fos = new FileOutputStream("/dev/ttyMSM1");
         fos.write(frame);
         fos.close();
+    }
+
+    public interface McuAction {
+        void update(int cmdType, byte[] data);
     }
 
 }

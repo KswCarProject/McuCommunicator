@@ -10,7 +10,7 @@ interface McuEventLogic {
          * This is a sample. Remove any unneeded events for efficiency!
          */
         fun getMcuEvent(cmdType: Int, data: ByteArray): McuEvent? {
-            if (cmdType==0xA1) {
+            if (cmdType == 0xA1) {
                 if (data[0] == 0x17.toByte()) {
                     if (data[1] == 0x6.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveKnobTurnClockwise
                     if (data[1] == 0x7.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveKnobTurnCounterClockwise
@@ -44,32 +44,29 @@ interface McuEventLogic {
                     if (data[1] == 0x11.toByte() && data[2] == 0x0.toByte()) return McuEvent.SteeringWheelTelButtonReleased
                     if (data[1] == 0xb.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveTelephoneButtonLongPress
                     if (data[1] == 0xb.toByte() && data[2] == 0x0.toByte()) return McuEvent.iDriveTelephoneButtonLongRelease
-                }
-                else if (data[0] == 0x1A.toByte()){
+                } else if (data[0] == 0x1A.toByte()) {
                     if (data[1] == 0x1.toByte()) return McuEvent.SWITCHED_TO_ARM
                     if (data[1] == 0x2.toByte()) return McuEvent.SWITCHED_TO_OEM
-                }
-                else if (data[0] == 0x19.toByte()) return McuEvent.CarDataReceived
-                else if (data[0] == 0x10.toByte()){
-                    if (data[1]==0x0.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakReleased
-                    if (data[1]==0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakOnAndBeltOff
-                    if (data[1]==0x8.toByte() && data[2] == 0x1.toByte()) return McuEvent.BeltOn
-                    if (data[1]==0x0.toByte() && data[2] == 0x1.toByte()) return McuEvent.ParkingBreakReleasedAndBeltOn
-                }
-                else if (data[0] == 0x12.toByte()) {
-                    if (data[1]==0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.AllDoorsClosed
-                    if (data[1]==0x18.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontLeftDoorOpened
-                    if (data[1]==0x28.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontRightDoorOpened
-                    if (data[1]==0x38.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontDoorsOpened
-                    if (data[1]==0xc.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkOpened
-                    if (data[1]==0x1c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndLeftDoorOpened
-                    if (data[1]==0x2c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndRightDoorOpened
-                    if (data[1]==0x3c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndDoorsOpened
+                } else if (data[0] == 0x19.toByte()) return McuEvent.CarDataReceived
+                else if (data[0] == 0x10.toByte()) {
+                    if (data[1] == 0x0.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakReleased
+                    if (data[1] == 0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakOnAndBeltOff
+                    if (data[1] == 0x8.toByte() && data[2] == 0x1.toByte()) return McuEvent.BeltOn
+                    if (data[1] == 0x0.toByte() && data[2] == 0x1.toByte()) return McuEvent.ParkingBreakReleasedAndBeltOn
+                } else if (data[0] == 0x12.toByte()) {
+                    if (data[1] == 0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.AllDoorsClosed
+                    if (data[1] == 0x18.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontLeftDoorOpened
+                    if (data[1] == 0x28.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontRightDoorOpened
+                    if (data[1] == 0x38.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontDoorsOpened
+                    if (data[1] == 0xc.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkOpened
+                    if (data[1] == 0x1c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndLeftDoorOpened
+                    if (data[1] == 0x2c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndRightDoorOpened
+                    if (data[1] == 0x3c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndDoorsOpened
                 }
             } else {
-                if (cmdType==0x11){
-                    if (data[0] == 0x3.toByte() && data[1]==0x1.toByte()) return McuEvent.ParkingRadarViewOn
-                    if (data[0] == 0x3.toByte() && data[1]==0x0.toByte()) return McuEvent.ParkingRadarViewOff
+                if (cmdType == 0x11) {
+                    if (data[0] == 0x3.toByte() && data[1] == 0x1.toByte()) return McuEvent.ParkingRadarViewOn
+                    if (data[0] == 0x3.toByte() && data[1] == 0x0.toByte()) return McuEvent.ParkingRadarViewOff
                 }
             }
 
