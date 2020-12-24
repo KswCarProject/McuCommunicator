@@ -103,6 +103,18 @@ enum class McuEvent {
     MediaPlayPauseButtonReleased,
 
     /**
+     * @author Snaggle
+     * When Media button from steering wheel has been pressed down.
+     */
+    MenuButtonPress,
+
+    /**
+     * @author Snaggle
+     * When Media button from steering wheel has been released.
+     */
+    MenuButtonRelease,
+
+    /**
      * @author VincentZ4
      * Returns true if iDrive Knob has been tilted Up.
      */
