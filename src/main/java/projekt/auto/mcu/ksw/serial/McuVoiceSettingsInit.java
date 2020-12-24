@@ -23,6 +23,7 @@ public class McuVoiceSettingsInit {
     private McuVoiceSettingsInit() throws ClassNotFoundException, NoSuchMethodException {
     }
 
+    @SuppressWarnings("SameParameterValue")
     @SuppressLint("PrivateApi")
     private static IBinder getService(String serviceName) {
         try {

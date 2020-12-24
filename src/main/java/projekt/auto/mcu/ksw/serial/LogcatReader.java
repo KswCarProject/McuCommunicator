@@ -28,8 +28,9 @@ public class LogcatReader {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             BufferedReader bufRead = new BufferedReader(new InputStreamReader(logProc.getInputStream()));
-            String line = "";
+            String line;
             try {
                 while (isReading) {
                     try {
@@ -48,6 +49,7 @@ public class LogcatReader {
                                 for (int i = 0; i < data.length; i++) {
                                     data[i] = Byte.parseByte(dataStrs[i], 16);
                                 }
+
                                 if (BuildConfig.DEBUG)
                                     Log.d("LogcatReader", "Mcu reader: " + command);
                                 for (Byte b : data)
@@ -58,6 +60,7 @@ public class LogcatReader {
                             }
                         }
                         try {
+                            //noinspection BusyWait
                             Thread.sleep(250);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -66,7 +69,6 @@ public class LogcatReader {
                         break;
                     }
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
