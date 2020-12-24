@@ -47,7 +47,7 @@ public class LogcatReader {
                                 String[] dataStrs = byteStrs.split("-");
                                 byte[] data = new byte[dataStrs.length];
                                 for (int i = 0; i < data.length; i++) {
-                                    data[i] = Byte.parseByte(dataStrs[i], 16);
+                                    data[i] = (byte)(Integer.parseInt(dataStrs[i], 16));
                                 }
 
                                 if (BuildConfig.DEBUG)
