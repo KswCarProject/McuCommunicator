@@ -9,16 +9,11 @@ import java.io.InterruptedIOException;
 
 import projekt.auto.mcu.BuildConfig;
 
-public class LogcatReader {
-    private final McuCommunicator.McuAction callback;
+public class LogcatReader implements McuCommunicator.Reader{
     private Process logProc;
     private boolean isReading = false;
 
-    public LogcatReader(McuCommunicator.McuAction callbackEvent) {
-        this.callback = callbackEvent;
-    }
-
-    public void startReading() {
+    public void startReading(McuCommunicator.McuAction notifier) {
         if (isReading) return;
         Thread readerThread = new Thread(() -> {
             try {
@@ -56,7 +51,7 @@ public class LogcatReader {
                                     if (BuildConfig.DEBUG)
                                         Log.d("LogcatReader", "Mcu reader: " + b);
 
-                                callback.update(command, data);
+                                notifier.update(command, data);
                             }
                         }
                         try {
@@ -69,6 +64,7 @@ public class LogcatReader {
                         break;
                     }
                 }
+                isReading = false;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,5 +75,10 @@ public class LogcatReader {
     public void stopReading() {
         if (logProc != null) logProc.destroy();
         isReading = false;
+    }
+
+    @Override
+    public boolean getReading() {
+        return isReading;
     }
 }
