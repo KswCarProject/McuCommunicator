@@ -915,7 +915,7 @@ interface McuCommands {
          * Default=Off
          * Needs more info!
          */
-        val Record_AUX_Switching_Off: McuCommands = object : McuCommands {
+        val Automatic_AUX_Switching_Off: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x70
             override val data: ByteArray
@@ -928,7 +928,7 @@ interface McuCommands {
          * Default=Off
          * Needs more info!
          */
-        val Record_AUX_Switching_On: McuCommands = object : McuCommands {
+        val Automatic_AUX_Switching_On: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x70
             override val data: ByteArray
