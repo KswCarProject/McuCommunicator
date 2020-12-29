@@ -10,7 +10,10 @@ interface McuEventLogic {
          * This is a sample. Remove any unneeded events for efficiency!
          */
         fun getMcuEvent(cmdType: Int, data: ByteArray): McuEvent? {
-            if (cmdType == 0xA1) {
+            if (cmdType == 0x1C) {
+                if (data[0] == 0x1.toByte()) return McuEvent.Idle
+            }
+            else if (cmdType == 0xA1) {
                 if (data[0] == 0x17.toByte()) {
                     if (data[1] == 0x6.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveKnobTurnClockwise
                     if (data[1] == 0x7.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveKnobTurnCounterClockwise

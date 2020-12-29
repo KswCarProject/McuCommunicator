@@ -15,6 +15,13 @@ package projekt.auto.mcu.ksw.serial
 enum class McuEvent {
     /**
      * @author Snaggly
+     * Idle return.
+     * Mcu ready to transmit data.
+     */
+    Idle,
+
+    /**
+     * @author Snaggly
      * Checks if it's an CanEventType.
      * This could be triggered by anything happening from the car.
      */

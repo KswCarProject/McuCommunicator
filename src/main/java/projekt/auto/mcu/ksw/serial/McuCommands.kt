@@ -1302,5 +1302,19 @@ interface McuCommands {
             override val update: Boolean
                 get() = false
         }
+
+        /**
+         * @author Snaggly
+         * !Required for McuCommunication if not being done already!
+         * Send this periodically to receive data from Mcu.
+         */
+        val MCU_Beat: McuCommands = object : McuCommands {
+            override val command: Int
+                get() = 0x68
+            override val data: ByteArray
+                get() = byteArrayOf(8, 0)
+            override val update: Boolean
+                get() = false
+        }
     }
 }
