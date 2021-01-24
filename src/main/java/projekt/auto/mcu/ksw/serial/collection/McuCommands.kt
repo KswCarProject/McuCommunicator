@@ -1,4 +1,4 @@
-package projekt.auto.mcu.ksw.serial
+package projekt.auto.mcu.ksw.serial.collection
 
 import projekt.auto.mcu.ksw.serial.enums.*
 

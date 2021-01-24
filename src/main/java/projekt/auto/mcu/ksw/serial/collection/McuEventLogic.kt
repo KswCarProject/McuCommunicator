@@ -1,7 +1,7 @@
-package projekt.auto.mcu.ksw.serial
+package projekt.auto.mcu.ksw.serial.collection
 
 interface McuEventLogic {
-    fun getMcuEvent(cmdType: Int, data: ByteArray)
+    fun getMcuEvent(cmdType: Int, data: ByteArray) : McuEvent?
 
     companion object {
         /**

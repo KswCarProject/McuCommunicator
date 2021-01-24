@@ -1,4 +1,4 @@
-package projekt.auto.mcu.ksw.serial;
+package projekt.auto.mcu.ksw.serial.reader;
 
 import android.util.Log;
 
@@ -8,10 +8,18 @@ import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 
 import projekt.auto.mcu.BuildConfig;
+import projekt.auto.mcu.ksw.serial.McuCommunicator;
 
-public class LogcatReader implements McuCommunicator.Reader{
+public class LogcatReader implements Reader{
     private Process logProc;
     private boolean isReading = false;
+    public int readerInterval = 250;
+
+    public LogcatReader() {}
+
+    public LogcatReader(int readerInterval) {
+        this.readerInterval = readerInterval;
+    }
 
     public void startReading(McuCommunicator.McuAction notifier) {
         if (isReading) return;
@@ -56,7 +64,7 @@ public class LogcatReader implements McuCommunicator.Reader{
                         }
                         try {
                             //noinspection BusyWait
-                            Thread.sleep(250);
+                            Thread.sleep(readerInterval);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

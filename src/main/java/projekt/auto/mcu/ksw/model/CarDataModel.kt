@@ -1,4 +1,4 @@
-package projekt.auto.mcu.ksw.serial
+package projekt.auto.mcu.ksw.model
 
 import kotlin.experimental.and
 
