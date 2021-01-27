@@ -374,6 +374,43 @@ interface McuCommands {
             get() = false
     }
 
+    /**
+     * @author Snaggly
+     * Needs more info!
+     *
+     * @param buttonPress Can be either 1,2 or 3
+     */
+    class SendBenzControlData(buttonPress: Int,
+                              var light1: Int,
+                              var light2: Int,
+                              var key3: Int) : McuCommands {
+        private var buttonPress1 : Byte = 0
+        private var buttonPress2 : Byte = 0
+        private var buttonPress3 : Byte = 0
+
+        init {
+            when (buttonPress) {
+                1 -> this.buttonPress1 = 1
+                2 -> this.buttonPress2 = 1
+                3 -> this.buttonPress3 = 1
+            }
+        }
+
+        override val command: Int
+            get() = 0x79
+
+        override val data: ByteArray
+            get() = byteArrayOf(buttonPress1,
+                    buttonPress2,
+                    buttonPress3,
+                    light1.toByte(),
+                    light2.toByte(),
+                    key3.toByte())
+
+        override val update: Boolean
+            get() = false
+    }
+
     companion object {
         val Increase_AirCond_Temperature: McuCommands = object : McuCommands {
             override val command: Int
