@@ -49,31 +49,21 @@ interface McuEventLogic {
                     if (data[1] == 0xb.toByte() && data[2] == 0x0.toByte()) return McuEvent.iDriveTelephoneButtonLongRelease
                     if (data[1] == 0x10.toByte() && data[2] == 0x1.toByte()) return McuEvent.MenuButtonPress
                     if (data[1] == 0x10.toByte() && data[2] == 0x0.toByte()) return McuEvent.MenuButtonRelease
+                /**
+                 * The following checks are just for Data collection in McuStatus
+                 */
                 } else if (data[0] == 0x1A.toByte()) {
                     if (data[1] == 0x1.toByte()) return McuEvent.SWITCHED_TO_ARM
                     if (data[1] == 0x2.toByte()) return McuEvent.SWITCHED_TO_OEM
                 } else if (data[0] == 0x19.toByte()) return McuEvent.CarDataReceived
-                else if (data[0] == 0x10.toByte()) {
-                    if (data[1] == 0x0.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakReleased
-                    if (data[1] == 0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.ParkingBreakOnAndBeltOff
-                    if (data[1] == 0x8.toByte() && data[2] == 0x1.toByte()) return McuEvent.BeltOn
-                    if (data[1] == 0x0.toByte() && data[2] == 0x1.toByte()) return McuEvent.ParkingBreakReleasedAndBeltOn
-                } else if (data[0] == 0x12.toByte()) {
-                    if (data[1] == 0x8.toByte() && data[2] == 0x0.toByte()) return McuEvent.AllDoorsClosed
-                    if (data[1] == 0x18.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontLeftDoorOpened
-                    if (data[1] == 0x28.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontRightDoorOpened
-                    if (data[1] == 0x38.toByte() && data[2] == 0x0.toByte()) return McuEvent.FrontDoorsOpened
-                    if (data[1] == 0xc.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkOpened
-                    if (data[1] == 0x1c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndLeftDoorOpened
-                    if (data[1] == 0x2c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndRightDoorOpened
-                    if (data[1] == 0x3c.toByte() && data[2] == 0x0.toByte()) return McuEvent.TrunkAndDoorsOpened
-                }
-            } else {
-                if (cmdType == 0x11) {
+                else if (data[0] == 0x1C.toByte()) return McuEvent.ACDataReceived
+                else if (data[0] == 0x10.toByte()) return McuEvent.BrakeBeltEvent
+                else if (data[0] == 0x12.toByte()) return McuEvent.DoorEvent
+            } else if (cmdType == 0x11) {
                     if (data[0] == 0x3.toByte() && data[1] == 0x1.toByte()) return McuEvent.ParkingRadarViewOn
                     if (data[0] == 0x3.toByte() && data[1] == 0x0.toByte()) return McuEvent.ParkingRadarViewOff
-                }
-            }
+            } else if (cmdType == 0x12) return McuEvent.McuVersionStringReceived
+            else if (cmdType == 0x1D) return McuEvent.BenzDataReceived
 
             return null
         }

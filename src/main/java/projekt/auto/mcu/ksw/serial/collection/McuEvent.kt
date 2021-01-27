@@ -346,4 +346,31 @@ enum class McuEvent {
      */
     ParkingRadarViewOff,
 
+    /**
+     * @author Snaggly
+     */
+    BrakeBeltEvent,
+
+    /**
+     * @author Snaggly
+     */
+    DoorEvent,
+
+    /**
+     * @author Snaggly
+     * This Event is raised when ACData has been received
+     */
+    ACDataReceived,
+
+    /**
+     * @author Snaggly
+     */
+    McuVersionStringReceived,
+
+    /**
+     * @author Snaggly
+     * Includes HighChassisSwitch, AirMaticStatus, AuxiliaryRadar, LightData and AirbagSystem
+     */
+    BenzDataReceived
+
 }
