@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi;
  * This Class is an altered version taken fromm the Ksw Sources
  * The changes include mainly the removal of functional methods
  * and addition of parsing logic.
- *
+ * <p>
  * Use it to parse CarData and have an object to broadcast to clients!
  * Predertime the Event type with McuEventLogic before parsing.
  */
@@ -27,6 +27,38 @@ public class McuStatus {
     public McuStatus(int systemMode2, String mcuVerison2) {
         this.systemMode = systemMode2;
         this.mcuVerison = mcuVerison2;
+    }
+
+    public int getSystemMode() {
+        return this.systemMode;
+    }
+
+    public void setSystemMode(int systemMode2) {
+        this.systemMode = systemMode2;
+    }
+
+    public String getMcuVerison() {
+        return this.mcuVerison;
+    }
+
+    public void setMcuVerison(String mcuVerison2) {
+        this.mcuVerison = mcuVerison2;
+    }
+
+    public CarData getCarData() {
+        return this.carData;
+    }
+
+    public void setCarData(CarData carData2) {
+        this.carData = carData2;
+    }
+
+    public ACData getAcData() {
+        return this.acData;
+    }
+
+    public void setAcData(ACData acData2) {
+        this.acData = acData2;
     }
 
     public static class ACData {
@@ -264,37 +296,5 @@ public class McuStatus {
             this.oilUnitType = data[15] & 2;
             this.oilUnitType += data[15] & 255 & 1;
         }
-    }
-
-    public int getSystemMode() {
-        return this.systemMode;
-    }
-
-    public void setSystemMode(int systemMode2) {
-        this.systemMode = systemMode2;
-    }
-
-    public String getMcuVerison() {
-        return this.mcuVerison;
-    }
-
-    public void setMcuVerison(String mcuVerison2) {
-        this.mcuVerison = mcuVerison2;
-    }
-
-    public CarData getCarData() {
-        return this.carData;
-    }
-
-    public void setCarData(CarData carData2) {
-        this.carData = carData2;
-    }
-
-    public ACData getAcData() {
-        return this.acData;
-    }
-
-    public void setAcData(ACData acData2) {
-        this.acData = acData2;
     }
 }

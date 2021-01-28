@@ -1,7 +1,7 @@
 package projekt.auto.mcu.protocol
 
-import projekt.auto.mcu.ksw.serial.collection.McuCommands
 import projekt.auto.mcu.ksw.serial.McuCommunicator
+import projekt.auto.mcu.ksw.serial.collection.McuCommands
 
 internal class KswProtocol : Protocol {
 

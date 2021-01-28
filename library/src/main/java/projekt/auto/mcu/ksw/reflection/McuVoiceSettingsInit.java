@@ -28,7 +28,7 @@ public class McuVoiceSettingsInit {
     private static IBinder getService(String serviceName) {
         try {
             Class<?> serviceManager = Class.forName("android.os.ServiceManager");
-            return (IBinder) serviceManager.getMethod("getService", new Class[]{String.class}).invoke(serviceManager, new Object[]{serviceName});
+            return (IBinder) serviceManager.getMethod("getService", String.class).invoke(serviceManager, new Object[]{serviceName});
         } catch (Exception e) {
             return null;
         }

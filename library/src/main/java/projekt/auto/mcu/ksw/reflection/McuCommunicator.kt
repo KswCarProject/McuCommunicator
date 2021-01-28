@@ -14,10 +14,11 @@ object McuCommunicator {
         return try {
             @SuppressLint("PrivateApi")
             val cls = DexClassLoader(
-                    "/system/app/KswPLauncher/KswPLauncher.apk",
-                    "/data/tmp/",
-                    "/data/tmp/",
-                    ClassLoader.getSystemClassLoader()).loadClass("com.wits.ksw.settings.utlis_view.McuUtil")
+                "/system/app/KswPLauncher/KswPLauncher.apk",
+                "/data/tmp/",
+                "/data/tmp/",
+                ClassLoader.getSystemClassLoader()
+            ).loadClass("com.wits.ksw.settings.utlis_view.McuUtil")
             val method = cls.getDeclaredMethod("getMcuVersion")
             method.invoke(null) as String
         } catch (e: Exception) {
@@ -36,11 +37,17 @@ object McuCommunicator {
         return try {
             @SuppressLint("PrivateApi")
             val cls = DexClassLoader(
-                    "/system/app/KswPLauncher/KswPLauncher.apk",
-                    "/data/tmp/",
-                    "/data/tmp/",
-                    ClassLoader.getSystemClassLoader()).loadClass("com.wits.pms.statuscontrol.WitsCommand")
-            val method = cls.getDeclaredMethod("sendCommand", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, String::class.java)
+                "/system/app/KswPLauncher/KswPLauncher.apk",
+                "/data/tmp/",
+                "/data/tmp/",
+                ClassLoader.getSystemClassLoader()
+            ).loadClass("com.wits.pms.statuscontrol.WitsCommand")
+            val method = cls.getDeclaredMethod(
+                "sendCommand",
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                String::class.java
+            )
             method.invoke(null, command, subCommand, null)
             true
         } catch (e: Exception) {

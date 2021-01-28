@@ -10,12 +10,13 @@ import java.io.InterruptedIOException;
 import projekt.auto.mcu.BuildConfig;
 import projekt.auto.mcu.ksw.serial.McuCommunicator;
 
-public class LogcatReader implements Reader{
+public class LogcatReader implements Reader {
+    public int readerInterval = 250;
     private Process logProc;
     private boolean isReading = false;
-    public int readerInterval = 250;
 
-    public LogcatReader() {}
+    public LogcatReader() {
+    }
 
     public LogcatReader(int readerInterval) {
         this.readerInterval = readerInterval;

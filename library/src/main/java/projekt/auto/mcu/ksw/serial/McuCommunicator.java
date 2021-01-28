@@ -10,10 +10,10 @@ import projekt.auto.mcu.ksw.serial.writer.Writer;
 
 public class McuCommunicator {
     private static McuCommunicator instance;
-    private volatile boolean isBeatRunning = false;
     public Writer mcuWriter;
     public Reader mcuReader;
     public int beatTimerInterval = 1000;
+    private volatile boolean isBeatRunning = false;
 
     public McuCommunicator(Writer mcuWriter, Reader mcuReader) {
         this.mcuWriter = mcuWriter;
@@ -50,7 +50,7 @@ public class McuCommunicator {
         System.arraycopy(data, 0, frame, 4, data.length);
         for (byte b = 1; b < frame.length - 1; b++)
             sum += frame[b];
-        frame[frame.length - 1] = (byte)(0xFF - sum);
+        frame[frame.length - 1] = (byte) (0xFF - sum);
 
         return frame;
     }
