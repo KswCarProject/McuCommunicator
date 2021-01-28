@@ -16,11 +16,11 @@ Add this in your root `build.gradle` file:
 	}
 ```
 
-You can now import this library API into your project directly and interact with the classes inside. (Replace "Release" with the proper release tag on GitHub: current=1.0)
+You can now import this library API into your project directly and interact with the classes inside. (Replace "current-release" with the proper release tag on GitHub: current=1.0.1)
 
 ```css
 	dependencies {
-	        implementation 'com.github.KswCarProject:McuCommunicator:Release'
+	        implementation 'com.github.KswCarProject:McuCommunicator:current-release'
 	}
 ```
 
