@@ -187,14 +187,15 @@ interface McuCommands {
     }
 
     /**
-     * Needs more info!
+     * @author Snaggly
      * @param brightness: Allowed values: 0-100
+     * For lowest brightness set brightness to 0 and 100 for highest possible brightness
      */
     class SetBrightnessLevel(private val brightness: Byte) : McuCommands {
         override val command: Int
             get() = 0x6C
         override val data: ByteArray
-            get() = byteArrayOf(brightness)
+            get() = byteArrayOf(1, brightness)
         override val update: Boolean
             get() = false
     }
