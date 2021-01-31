@@ -9,7 +9,8 @@ enum class SOUND_SRC_TYPE(val typeValue: Byte) {
     SRC_AUX(0x6),
     SRC_MOBILE_APP(0x7),
     SRC_DVD(0x8),
-    SRC_CMMB(0x9),
+    SRC_DTV(0x9),
     SRC_RADIO(0xA),
+    SRC_FRONTCAM(0xB),
     SRC_ATSL_AIRCONSOLE(0xd)
 }
