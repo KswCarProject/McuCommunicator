@@ -1386,13 +1386,26 @@ interface McuCommands {
         /**
          * @author Snaggly
          * !Required for McuCommunication if not being done already!
-         * Send this periodically to receive data from Mcu.
+         * Send this periodically to receive SystemMode from Mcu.
          */
         val MCU_Beat: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x68
             override val data: ByteArray
                 get() = byteArrayOf(8, 0)
+            override val update: Boolean
+                get() = false
+        }
+
+        /**
+         * @author Snaggly
+         * Gets Mcu Version and System Settings
+         */
+        val SYS_MCU_VERSION: McuCommands = object : McuCommands {
+            override val command: Int
+                get() = 0x61
+            override val data: ByteArray
+                get() = byteArrayOf(0)
             override val update: Boolean
                 get() = false
         }
