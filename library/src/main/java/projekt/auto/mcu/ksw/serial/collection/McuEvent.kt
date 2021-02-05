@@ -371,6 +371,17 @@ enum class McuEvent {
      * @author Snaggly
      * Includes HighChassisSwitch, AirMaticStatus, AuxiliaryRadar, LightData and AirbagSystem
      */
-    BenzDataReceived
+    BenzDataReceived,
 
+    /**
+     * @author Snaggly
+     * This was found in Mercedes models
+     */
+    TelephoneHangUpButtonPress,
+
+    /**
+     * @author Snaggly
+     * This was found in Mercedes models
+     */
+    TelephoneHangUpButtonRelease
 }

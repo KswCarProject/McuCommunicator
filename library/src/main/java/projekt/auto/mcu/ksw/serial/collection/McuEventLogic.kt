@@ -46,6 +46,8 @@ interface McuEventLogic {
                     if (data[1] == 0x11.toByte() && data[2] == 0x0.toByte()) return McuEvent.SteeringWheelTelButtonReleased
                     if (data[1] == 0xb.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveTelephoneButtonLongPress
                     if (data[1] == 0xb.toByte() && data[2] == 0x0.toByte()) return McuEvent.iDriveTelephoneButtonLongRelease
+                    if (data[1] == 0x1f.toByte() && data[2] == 0x1.toByte()) return McuEvent.TelephoneHangUpButtonPress
+                    if (data[1] == 0x1f.toByte() && data[2] == 0x0.toByte()) return McuEvent.TelephoneHangUpButtonRelease
                     if (data[1] == 0x10.toByte() && data[2] == 0x1.toByte()) return McuEvent.MenuButtonPress
                     if (data[1] == 0x10.toByte() && data[2] == 0x0.toByte()) return McuEvent.MenuButtonRelease
                     /**
