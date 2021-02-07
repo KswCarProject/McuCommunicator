@@ -32,6 +32,10 @@ interface McuEventLogic {
                     if (data[1] == 0x18.toByte() && data[2] == 0x1.toByte()) return McuEvent.MediaNextButtonReleased
                     if (data[1] == 0x17.toByte() && data[2] == 0x0.toByte()) return McuEvent.MediaPreviousButtonPressed
                     if (data[1] == 0x17.toByte() && data[2] == 0x1.toByte()) return McuEvent.MediaPreviousButtonReleased
+                    if (data[1] == 0x16.toByte() && data[2] == 0x0.toByte()) return McuEvent.VolumeDecreasePressed
+                    if (data[1] == 0x16.toByte() && data[2] == 0x1.toByte()) return McuEvent.VolumeDecreaseReleased
+                    if (data[1] == 0x15.toByte() && data[2] == 0x0.toByte()) return McuEvent.VolumeIncreasePressed
+                    if (data[1] == 0x15.toByte() && data[2] == 0x1.toByte()) return McuEvent.VolumeIncreaseReleased
                     if (data[1] == 0x14.toByte() && data[2] == 0x1.toByte()) return McuEvent.VoiceCommandPress
                     if (data[1] == 0x14.toByte() && data[2] == 0x0.toByte()) return McuEvent.VoiceCommandRelease
                     if (data[1] == 0x8.toByte() && data[2] == 0x1.toByte()) return McuEvent.iDriveMenuButtonPressed

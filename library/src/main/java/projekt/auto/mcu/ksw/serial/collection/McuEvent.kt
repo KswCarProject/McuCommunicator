@@ -383,5 +383,29 @@ enum class McuEvent {
      * @author Snaggly
      * This was found in Mercedes models
      */
-    TelephoneHangUpButtonRelease
+    TelephoneHangUpButtonRelease,
+
+    /**
+     * @author Snaggly
+     * This was found in Mercedes W205 LC 27/08/2020 MCU
+     */
+    VolumeDecreasePressed,
+
+    /**
+     * @author Snaggly
+     * This was found in Mercedes W205 LC 27/08/2020 MCU
+     */
+    VolumeDecreaseReleased,
+
+    /**
+     * @author Snaggly
+     * This was found in Mercedes W205 LC 27/08/2020 MCU
+     */
+    VolumeIncreasePressed,
+
+    /**
+     * @author Snaggly
+     * This was found in Mercedes W205 LC 27/08/2020 MCU
+     */
+    VolumeIncreaseReleased
 }
