@@ -555,27 +555,30 @@ interface McuCommands {
         }
 
         /**
-         * Stops the navigation callouts to center speaker
-         * Needs more info!
+         * @author Snaggly
+         *
+         * Stops Center Speaker
          */
         val Stop_Voice: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x69
             override val data: ByteArray
-                get() = byteArrayOf(19, 0)
+                get() = byteArrayOf(19, 0, 0)
             override val update: Boolean
                 get() = false
         }
 
         /**
-         * Starts the navigation callouts to center speaker
-         * Needs more info!
+         * @author Snaggly
+         *
+         * Reroutes the Android's sound to the additional center speaker/front left speaker
+         * This is used to route the navigation callouts while OEM Radio is playing
          */
         val Start_Voice: McuCommands = object : McuCommands {
             override val command: Int
                 get() = 0x69
             override val data: ByteArray
-                get() = byteArrayOf(19, 1)
+                get() = byteArrayOf(19, 1, 0)
             override val update: Boolean
                 get() = false
         }
