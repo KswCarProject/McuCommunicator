@@ -113,8 +113,8 @@ public class McuStatus {
             this.mode = data[2];
             this.setLeftTmp(data[3]);
             this.setRightTmp(data[4]);
-            //this.autoSwitch = (data[5] & WifiScanner.PnoSettings.PnoNetwork.FLAG_SAME_NETWORK) != 0;
-            //this.speed = ((float) (data[5] & MidiConstants.STATUS_CHANNEL_MASK)) * 0.5f;
+            this.autoSwitch = (data[5] & 16) != 0;
+            this.speed = ((float) (data[5] & 15)) * 0.5f;
         }
     }
 
