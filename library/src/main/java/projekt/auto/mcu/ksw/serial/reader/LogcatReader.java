@@ -55,7 +55,7 @@ public class LogcatReader implements Reader {
                                         data[i] = (byte) (Integer.parseInt(dataStrs[i], 16));
                                     } catch (Exception e) {
                                         // We will just skip the parsing of any other objects here
-                                        Log.e("LogcatReader", "Received incorrect data", e);
+                                        Log.e("LogcatReader", "Received incorrect data \"" + dataStrs[i] + "\"", e);
                                     }
                                 }
 
