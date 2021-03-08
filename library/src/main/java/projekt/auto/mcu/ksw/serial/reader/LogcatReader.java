@@ -51,7 +51,12 @@ public class LogcatReader implements Reader {
                                 String[] dataStrs = byteStrs.split("-");
                                 byte[] data = new byte[dataStrs.length];
                                 for (int i = 0; i < data.length; i++) {
-                                    data[i] = (byte) (Integer.parseInt(dataStrs[i], 16));
+                                    try {
+                                        data[i] = (byte) (Integer.parseInt(dataStrs[i], 16));
+                                    } catch (Exception e) {
+                                        // We will just skip the parsing of any other objects here
+                                        Log.e("LogcatReader", "Received incorrect data", e);
+                                    }
                                 }
 
                                 if (BuildConfig.DEBUG)
