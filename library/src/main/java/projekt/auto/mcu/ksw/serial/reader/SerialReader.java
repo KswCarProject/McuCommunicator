@@ -1,5 +1,6 @@
 package projekt.auto.mcu.ksw.serial.reader;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -15,14 +16,21 @@ public class SerialReader implements Reader {
 
     public int readerInterval = 50;
     private boolean isReading = false;
-    private String mcuSource = "/dev/ttyMSM1";
+    private final String mcuSource;
     private volatile byte[] frame;
+
+    public SerialReader() {
+        if (Build.VERSION.RELEASE.contains("11")) {
+            mcuSource = "/dev/ttyHS1";
+        } else if (Build.DISPLAY.contains("8937")) {
+            mcuSource = "/dev/ttyHSL1";
+        } else {
+            mcuSource = "/dev/ttyMSM1";
+        }
+    }
 
     public SerialReader(String mcuSource) {
         this.mcuSource = mcuSource;
-    }
-
-    public SerialReader() {
     }
 
     public synchronized boolean getReading() {
