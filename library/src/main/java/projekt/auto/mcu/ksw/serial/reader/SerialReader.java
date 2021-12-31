@@ -36,26 +36,37 @@ public class SerialReader implements Reader {
     @Override
     public void startReading(McuCommunicator.McuAction notifier) throws FileNotFoundException {
         FileInputStream fis = new FileInputStream(mcuSource);
-        setReading(true);
         new Thread(() -> {
+            setReading(true);
+            int cmdType;
+            byte[] dataBytes;
+            frame = new byte[1024];
+            int index;
             while (getReading()) {
-                frame = new byte[128];
                 try {
                     int size = fis.read(frame);
-                    if (size > 0) {
-                        if (frame[0] != (byte) 242)
+                    for (index = 0; index < size; index++) {
+                        if (frame[index] != (byte) 242)
                             continue;
-                        int cmdType = frame[2] & 0xFF;
-                        byte[] dataBytes = new byte[frame[3] & 0xFF];
-                        System.arraycopy(frame, 4, dataBytes, 0, dataBytes.length);
+                        if (index + 4 > size) { //Overflow
+                            break;
+                        }
+                        index+=2;
+                        cmdType = frame[index++] & 0xFF;
+                        dataBytes = new byte[frame[index++] & 0xFF];
+                        if (index + dataBytes.length > size) { //Overflow
+                            break;
+                        }
+                        System.arraycopy(frame, index, dataBytes, 0, dataBytes.length);
                         notifier.update(cmdType, dataBytes);
-                        Thread.sleep(readerInterval);
                     }
+                    Thread.sleep(readerInterval);
                 } catch (IOException | InterruptedException exception) {
                     Log.d("McuSerialReader", "Exception in SerialReader Thread " + exception.getLocalizedMessage());
                 }
             }
         }).start();
+        while(!getReading()); //Wait until the thread actually started to allow replyable commands right after start
     }
 
     @Override
