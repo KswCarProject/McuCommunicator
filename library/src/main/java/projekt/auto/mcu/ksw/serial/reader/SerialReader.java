@@ -63,7 +63,7 @@ public class SerialReader implements Reader {
                     int current;
                     int next;
 
-                    while (nextSize == 0) {
+                    if (nextSize == 0) {
                         Thread.sleep(readerInterval);
                     }
 
