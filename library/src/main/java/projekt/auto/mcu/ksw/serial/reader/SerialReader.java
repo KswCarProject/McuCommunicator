@@ -97,7 +97,7 @@ public class SerialReader implements Reader {
                                 checksum += current;
                                 // Checksum byte after all of the data bytes
                             } else if (i == indexStart + 4 + dataLen) {
-                                boolean isValid = (checksum ^ 255) == current;
+                                boolean isValid = (((checksum + 256) & 255) ^ 255) == current;
                                 if (isValid) {
                                     notifier.update(command, Arrays.copyOfRange(data, 0, dataLen));
                                     indexEnd = i + 1;
