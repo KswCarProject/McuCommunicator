@@ -74,7 +74,7 @@ public class SerialReader implements Reader {
                         next = (i < prevSize + nextSize) ? (((i + 1) >= prevSize ? nextRead[(i + 1) - prevSize] : prevRead[(i + 1)])) : -1;
 
                         // The start of the data: 0xF2 == -14 (signed) == 242 (unsigned) and is followed by empty byte
-                        if (current == 242 && next == 0) {
+                        if (current == 242 && next == 0 && indexStart == -1) {
                             indexStart = i;
                             indexEnd = 0;
                         } else if (indexStart != -1) {
@@ -97,7 +97,7 @@ public class SerialReader implements Reader {
                                 checksum += current;
                                 // Checksum byte after all of the data bytes
                             } else if (i == indexStart + 4 + dataLen) {
-                                boolean isValid = (checksum ^ 255) == current;
+                                boolean isValid = (((checksum + 256) & 255) ^ 255) == current;
                                 if (isValid) {
                                     notifier.update(command, Arrays.copyOfRange(data, 0, dataLen));
                                     indexEnd = i + 1;
