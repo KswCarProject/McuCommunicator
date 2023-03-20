@@ -1,5 +1,7 @@
 package projekt.auto.mcu.adb.lib;
 
+import org.apache.commons.codec.binary.Base64;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -82,10 +84,6 @@ public class AdbCrypto {
      * An RSA keypair encapsulated by the AdbCrypto object
      */
     private KeyPair keyPair;
-    /**
-     * The base 64 conversion interface to use
-     */
-    private AdbBase64 base64;
 
     /**
      * Converts a standard RSAPublicKey object to the special ADB format
@@ -150,7 +148,6 @@ public class AdbCrypto {
     /**
      * Creates a new AdbCrypto object from a key pair loaded from files.
      *
-     * @param base64     Implementation of base 64 conversion interface required by ADB
      * @param privateKey File containing the RSA private key
      * @param publicKey  File containing the RSA public key
      * @return New AdbCrypto object
@@ -159,7 +156,7 @@ public class AdbCrypto {
      * @throws InvalidKeySpecException  If a PKCS8 or X509 key spec cannot be found
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static AdbCrypto loadAdbKeyPair(AdbBase64 base64, File privateKey, File publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static AdbCrypto loadAdbKeyPair(File privateKey, File publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         AdbCrypto crypto = new AdbCrypto();
 
         int privKeyLength = (int) privateKey.length();
@@ -182,7 +179,6 @@ public class AdbCrypto {
 
         crypto.keyPair = new KeyPair(keyFactory.generatePublic(publicKeySpec),
                 keyFactory.generatePrivate(privateKeySpec));
-        crypto.base64 = base64;
 
         return crypto;
     }
@@ -194,14 +190,13 @@ public class AdbCrypto {
      * @return A new AdbCrypto object
      * @throws NoSuchAlgorithmException If an RSA key factory cannot be found
      */
-    public static AdbCrypto generateAdbKeyPair(AdbBase64 base64) throws NoSuchAlgorithmException {
+    public static AdbCrypto generateAdbKeyPair() throws NoSuchAlgorithmException {
         AdbCrypto crypto = new AdbCrypto();
 
         KeyPairGenerator rsaKeyPg = KeyPairGenerator.getInstance("RSA");
         rsaKeyPg.initialize(KEY_LENGTH_BITS);
 
         crypto.keyPair = rsaKeyPg.genKeyPair();
-        crypto.base64 = base64;
 
         return crypto;
     }
@@ -229,13 +224,13 @@ public class AdbCrypto {
      * @return Byte array containing the RSA public key in ADB format.
      * @throws IOException If the key cannot be retrived
      */
-    @SuppressWarnings({"StringBufferReplaceableByString", "RedundantThrows"})
+    @SuppressWarnings({"RedundantThrows"})
     public byte[] getAdbPublicKeyPayload() throws IOException {
         byte[] convertedKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
         StringBuilder keyString = new StringBuilder(720);
 
         /* The key is base64 encoded with a user@host suffix and terminated with a NUL */
-        keyString.append(base64.encodeToString(convertedKey));
+        keyString.append(new String(Base64.encodeBase64(convertedKey)));
         keyString.append(" unknown@unknown");
         keyString.append('\0');
 

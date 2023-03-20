@@ -12,16 +12,11 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import projekt.auto.mcu.adb.lib.AdbBase64;
 import projekt.auto.mcu.adb.lib.AdbConnection;
 import projekt.auto.mcu.adb.lib.AdbCrypto;
 import projekt.auto.mcu.adb.lib.AdbStream;
 
 public class AdbManager {
-
-    public static AdbBase64 getBase64Impl() {
-        return Base64::encodeBase64String;
-    }
 
     private static AdbCrypto setupCrypto(File fileDir) throws NoSuchAlgorithmException, IOException {
         File publicKey = new File(fileDir, "public.key");
@@ -30,13 +25,13 @@ public class AdbManager {
 
         if (publicKey.exists() && privateKey.exists()) {
             try {
-                c = AdbCrypto.loadAdbKeyPair(getBase64Impl(), privateKey, publicKey);
+                c = AdbCrypto.loadAdbKeyPair(privateKey, publicKey);
             } catch (Exception ignored) {
             }
         }
 
         if (c == null) {
-            c = AdbCrypto.generateAdbKeyPair(getBase64Impl());
+            c = AdbCrypto.generateAdbKeyPair();
             c.saveAdbKeyPair(privateKey, publicKey);
         }
 
