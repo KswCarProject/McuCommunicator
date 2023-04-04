@@ -7,10 +7,6 @@ public class SerialWriter implements Writer {
 
     private final String mcuSource;
 
-    public SerialWriter() {
-        this("/dev/ttyMSM1");
-    }
-
     public SerialWriter(String mcuSource) {
         this.mcuSource = mcuSource;
     }

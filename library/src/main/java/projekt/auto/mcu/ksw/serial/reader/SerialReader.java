@@ -1,10 +1,12 @@
 package projekt.auto.mcu.ksw.serial.reader;
 
 import android.util.Log;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+
 import projekt.auto.mcu.ksw.serial.McuCommunicator;
 
 /**
@@ -12,15 +14,12 @@ import projekt.auto.mcu.ksw.serial.McuCommunicator;
  */
 public class SerialReader implements Reader {
 
+    private final String mcuSource;
     public int readerInterval = 50;
     private boolean isReading = false;
-    private String mcuSource = "/dev/ttyMSM1";
 
     public SerialReader(String mcuSource) {
         this.mcuSource = mcuSource;
-    }
-
-    public SerialReader() {
     }
 
     public synchronized boolean getReading() {
@@ -70,7 +69,7 @@ public class SerialReader implements Reader {
                     for (int i = 0; i < prevSize + nextSize; i += 1) {
                         currentAsByte = (i >= prevSize ? nextRead[i - prevSize] : prevRead[i]);
                         // And 255 bytes. JAVA converts bytes to signed integers, bitwise operation bring them back to their unsigned - positive values
-                        current = (currentAsByte < 0) ?  currentAsByte & 255 : currentAsByte;
+                        current = (currentAsByte < 0) ? currentAsByte & 255 : currentAsByte;
                         next = (i < prevSize + nextSize) ? (((i + 1) >= prevSize ? nextRead[(i + 1) - prevSize] : prevRead[(i + 1)])) : -1;
 
                         // The start of the data: 0xF2 == -14 (signed) == 242 (unsigned) and is followed by empty byte
@@ -78,11 +77,11 @@ public class SerialReader implements Reader {
                             indexStart = i;
                             indexEnd = 0;
                         } else if (indexStart != -1) {
-                                // Empty byte
+                            // Empty byte
                             if (i == indexStart + 1) {
                                 checksum = current;
                             }
-                                // Command byte
+                            // Command byte
                             else if (i == indexStart + 2) {
                                 command = current;
                                 checksum += current;
@@ -108,7 +107,7 @@ public class SerialReader implements Reader {
                         }
                     }
                     // next prevSize is the number of any not processed bytes in the buffer (those after the checksum of the last fully retrieved command)
-                    int nextPrevSize = Math.min(MAX_MESSAGE * 2,  ((prevSize + nextSize) - indexEnd));
+                    int nextPrevSize = Math.min(MAX_MESSAGE * 2, ((prevSize + nextSize) - indexEnd));
                     for (int i = 0; i < nextPrevSize; i += 1) {
                         int realI = ((prevSize + nextSize) - nextPrevSize) + i;
                         prevRead[i] = realI >= prevSize ? nextRead[realI - prevSize] : prevRead[realI];
@@ -126,7 +125,8 @@ public class SerialReader implements Reader {
                 e.printStackTrace();
             }
         }).start();
-        while(!getReading()); //Wait until the thread actually started to allow replyable commands right after start
+        while (!getReading())
+            ; //Wait until the thread actually started to allow replyable commands right after start
     }
 
     @Override
