@@ -1,5 +1,7 @@
 package projekt.auto.mcu.ksw.serial;
 
+import android.os.Build;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import projekt.auto.mcu.ksw.serial.collection.McuCommands;
@@ -21,9 +23,17 @@ public class McuCommunicator {
     }
 
     public static McuCommunicator getInstance() {
-        if (instance == null)
-            instance = new McuCommunicator(new SerialWriter(), new LogcatReader());
-
+        if (instance == null) {
+            SerialWriter serialWriter;
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.DISPLAY.contains("M600")) {
+                serialWriter = new SerialWriter("/dev/ttyHS1");
+            } else if (Build.DISPLAY.contains("8937")) {
+                serialWriter = new SerialWriter("/dev/ttyHSL1");
+            } else {
+                serialWriter = new SerialWriter("/dev/ttyMSM1");
+            }
+            instance = new McuCommunicator(serialWriter, new LogcatReader());
+        }
         return instance;
     }
 
