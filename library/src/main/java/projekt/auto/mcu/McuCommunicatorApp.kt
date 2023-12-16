@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import projekt.auto.mcu.adb.AdbManager
 import projekt.auto.mcu.protocol.KswProtocol
 import projekt.auto.mcu.protocol.Protocol
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 
 object McuCommunicatorApp {
 
@@ -38,9 +40,29 @@ object McuCommunicatorApp {
         when (mcuType) {
             MCU.KSW -> {
                 // First, we must check if we have the READ_LOGS permission, as we must be capable of reading the MCU thrown by the CenterService
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
-                    if (AdbManager.executeCommands(context, arrayOf("pm grant ${context.packageName} ${Manifest.permission.READ_LOGS}"))) {
-                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_LOGS) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_LOGS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    val selfAdbAttempt = Executors.newSingleThreadExecutor().submit {
+                        Callable {
+                            try {
+                                AdbManager(context).use {
+                                    it.sendCommands(arrayOf("pm grant ${context.packageName} ${Manifest.permission.READ_LOGS}"))
+                                }
+                                true
+                            } catch (_: Exception) {
+                                false
+                            }
+                        }
+                    }.get() as Boolean
+                    if (selfAdbAttempt) {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.READ_LOGS
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
                             throw ImproperMcuApiInitializationException("McuCommunicator was unable to grant itself READ_LOGS permission, perhaps you are using the wrong MCU type?")
                         }
                     } else {
@@ -51,9 +73,11 @@ object McuCommunicatorApp {
                 McuCommunicatorApplication.protocol = KswProtocol()
                 return McuCommunicatorApplication.protocol as KswProtocol
             }
+
             MCU.PX6 -> {
                 throw ImproperMcuApiInitializationException("McuCommunicator does not support PX6 communication at the current moment")
             }
+
             MCU.MTK_10 -> {
                 throw ImproperMcuApiInitializationException("McuCommunicator does not support MTK_10 communication at the current moment")
             }
