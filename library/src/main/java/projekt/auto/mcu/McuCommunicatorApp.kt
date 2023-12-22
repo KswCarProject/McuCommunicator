@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat
 import projekt.auto.mcu.adb.AdbManager
 import projekt.auto.mcu.protocol.KswProtocol
 import projekt.auto.mcu.protocol.Protocol
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
 
 object McuCommunicatorApp {
 
@@ -45,28 +43,24 @@ object McuCommunicatorApp {
                         Manifest.permission.READ_LOGS
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    val selfAdbAttempt = Executors.newSingleThreadExecutor().submit {
-                        Callable {
-                            try {
-                                AdbManager(context).use {
-                                    it.sendCommands(arrayOf("pm grant ${context.packageName} ${Manifest.permission.READ_LOGS}"))
-                                }
-                                true
-                            } catch (_: Exception) {
-                                false
+                    val adbCommand =
+                        "pm grant ${context.packageName} ${Manifest.permission.READ_LOGS}"
+
+                    try {
+                        AdbManager(context) { command, lines, success ->
+                            if (command == adbCommand && success && ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.READ_LOGS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                throw ImproperMcuApiInitializationException("McuCommunicator was unable to grant itself READ_LOGS permission, perhaps you are using the wrong MCU type?")
                             }
+                        }.use {
+                            it.sendCommands(adbCommand)
                         }
-                    }.get() as Boolean
-                    if (selfAdbAttempt) {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.READ_LOGS
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            throw ImproperMcuApiInitializationException("McuCommunicator was unable to grant itself READ_LOGS permission, perhaps you are using the wrong MCU type?")
-                        }
-                    } else {
+                    } catch (_: Exception) {
                         throw ImproperMcuApiInitializationException("McuCommunicator was unable to execute ADB commands by itself, perhaps you are using the wrong MCU type?")
+
                     }
                 }
                 // Next, we set the library application to save the current protocol chosen
