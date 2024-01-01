@@ -69,8 +69,8 @@ public class AdbManager implements AutoCloseable {
                 }
                 for (String line : splitShellLines) {
                     if (!line.endsWith("\r\n")) {
-                        this.shellObserver.ifPresent(s -> s.updateShell(line));
                         if (!(currentCommand != null && currentCommand.equals("")) && commandWheel.isEmpty()) { //Last command
+                            this.shellObserver.ifPresent(s -> s.updateShell(line));
                             identifier = line;
                             this.shellResultObserver.ifPresent(this::submitResultingCommand);
                             currentCommand = "";
