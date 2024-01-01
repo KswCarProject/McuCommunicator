@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
@@ -41,7 +42,31 @@ public class AdbManager implements AutoCloseable {
             try {
                 final String shellText = new String(shellStream.read(), StandardCharsets.UTF_8);
                 String text = buffer + shellText;
-                String[] splitShellLines = text.split("(?<=\r\n)");
+                char[] shellCharacters = text.toCharArray();
+                final ArrayList<String> splitShellLines = new ArrayList<>();
+                StringBuilder lineBuilder = new StringBuilder();
+                boolean isOverLine = false;
+                for (int i = 0; i < shellCharacters.length; i++) {
+                    char shellChar = shellCharacters[i];
+                    if (shellChar == '<' && i < shellCharacters.length - 1 && shellCharacters[i + 1] == '\b') {
+                        isOverLine = true;
+                    } else if (shellChar == '\b') {
+                        lineBuilder.setLength(lineBuilder.length() - 1);
+                    } else {
+                        if (isOverLine) {
+                            lineBuilder.setLength(lineBuilder.indexOf("\r"));
+                            isOverLine = false;
+                        }
+                        lineBuilder = lineBuilder.append(shellChar);
+                    }
+                    if (shellChar == '\n') {
+                        splitShellLines.add(lineBuilder.toString());
+                        lineBuilder.setLength(0);
+                    }
+                }
+                if (lineBuilder.length() > 0) {
+                    splitShellLines.add(lineBuilder.toString());
+                }
                 for (String line : splitShellLines) {
                     if (!line.endsWith("\r\n")) {
                         this.shellObserver.ifPresent(s -> s.updateShell(line));
