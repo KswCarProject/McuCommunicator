@@ -22,6 +22,9 @@ import java.nio.charset.StandardCharsets;
  * Predertime the Event type with McuEventLogic before parsing.
  */
 public class McuStatus {
+    public static final int ANDROID_MODE = 1;
+    public static final int CAR_MODE = 2;
+    public static final int TYPE_MCU_STATUS = 5;
     public ACData acData = new ACData();
     public BenzData benzData = new BenzData();
     public CarData carData = new CarData();
@@ -33,6 +36,24 @@ public class McuStatus {
     public CarBluetoothStatus bluetoothStatus = new CarBluetoothStatus();
     public String mcuVerison;
     public int systemMode = 1;
+
+    public static final class MediaType {
+        public static final int SRC_ALL_APP = 13;
+        public static final int SRC_AUX = 6;
+        public static final int SRC_BT = 3;
+        public static final int SRC_BT_MUSIC = 4;
+        public static final int SRC_CAR = 0;
+        public static final int SRC_CAR_FM = 14;
+        public static final int SRC_DTV = 9;
+        public static final int SRC_DVD = 8;
+        public static final int SRC_DVD_YUV = 12;
+        public static final int SRC_DVR = 5;
+        public static final int SRC_F_CAM = 11;
+        public static final int SRC_MUSIC = 1;
+        public static final int SRC_PHONELINK = 7;
+        public static final int SRC_RADIO = 10;
+        public static final int SRC_VIDEO = 2;
+    }
 
     public McuStatus() {
     }
@@ -75,6 +96,14 @@ public class McuStatus {
     }
 
     public static class ACData {
+        public static final int LEFT_ABOVE = 128;
+        public static final int LEFT_AUTO = 16;
+        public static final int LEFT_BELOW = 32;
+        public static final int LEFT_FRONT = 64;
+        public static final int RIGHT_ABOVE = 8;
+        public static final int RIGHT_AUTO = 1;
+        public static final int RIGHT_BELOW = 2;
+        public static final int RIGHT_FRONT = 4;
         public static int i = 0;
         public boolean AC_Switch;
         public boolean autoSwitch;
@@ -150,6 +179,20 @@ public class McuStatus {
     }
 
     public static class CarData {
+        public static final int AHEAD_COVER = 8;
+        public static final int BACK_COVER = 4;
+        public static final int GEAR_D = 4;
+        public static final int GEAR_N = 2;
+        public static final int GEAR_P = 0;
+        public static final int GEAR_R = 6;
+        public static final int LEFT_AHEAD = 16;
+        public static final int LEFT_BACK = 64;
+        public static final int LLIGHT_OFF = 0;
+        public static final int LLIGHT_ON = 8;
+        public static final int RIGHT_AHEAD = 32;
+        public static final int RIGHT_BACK = 128;
+        public static final int RLIGHT_OFF = 0;
+        public static final int RLIGHT_ON = 16;
         public float airTemperature;
         public float averSpeed;
         public int carDoor;
@@ -167,6 +210,15 @@ public class McuStatus {
         public int signalRight;
         public int speed;
         public int temperatureUnitType;
+        public int carWheelAngle;
+        public int frontRadarDataL;
+        public int frontRadarDataLM;
+        public int frontRadarDataR;
+        public int frontRadarDataRM;
+        public int backRadarDataL;
+        public int backRadarDataLM;
+        public int backRadarDataR;
+        public int backRadarDataRM;
 
         public void parseFromBrakeBeltEvent(byte[] data) {
             this.handbrake = ((data[1] & 255) & 8) != 0;
@@ -198,6 +250,24 @@ public class McuStatus {
             this.distanceUnitType = data[15] & 8;
             this.oilUnitType = data[15] & 2;
             this.oilUnitType += data[15] & 255 & 1;
+        }
+
+        public void parseFromWheelAngleEvent(byte[] data) {
+            this.carWheelAngle = ((data[1] & 255) * 256) + (data[2] & 255);
+        }
+
+        public void parseFromFrontRadarEvent(byte[] data) {
+            this.frontRadarDataL = data[1] & 255;
+            this.frontRadarDataLM = data[2] & 255;
+            this.frontRadarDataRM = data[3] & 255;
+            this.frontRadarDataR = data[4] & 255;
+        }
+
+        public void parseFromBackRadarEvent(byte[] data) {
+            this.backRadarDataL = data[1] & 255;
+            this.backRadarDataLM = data[2] & 255;
+            this.backRadarDataRM = data[3] & 255;
+            this.backRadarDataR = data[4] & 255;
         }
     }
 
