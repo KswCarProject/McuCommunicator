@@ -3,6 +3,8 @@ package projekt.auto.mcu.adb;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -225,25 +227,19 @@ public class AdbManager implements AutoCloseable {
                 try {
                     shellStream.write(line.getBytes(StandardCharsets.UTF_8), true);
                     commandWheel.add(command);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
     }
 
-    public void disconnect() throws InterruptedException, IOException {
+    public void disconnect() throws IOException {
         if (isConnected) {
-            if (sender.awaitTermination(5, TimeUnit.SECONDS)) {
-                Log.w("AdbManager", "Adb sender timeout");
-            }
-            if (receiver.awaitTermination(5, TimeUnit.SECONDS)) {
-                Log.w("AdbManager", "Adb receiver timeout");
-            }
+            sender.shutdown();
+            receiver.shutdown();
             isConnected = false;
-            shellReaderWorker.join();
+            shellReaderWorker.interrupt();
             shellStream.close();
             adbConnection.close();
             socket.close();
@@ -267,6 +263,7 @@ public class AdbManager implements AutoCloseable {
             return error.getLocalizedMessage();
         }
 
+        @NonNull
         @Override
         public StackTraceElement[] getStackTrace() {
             return error.getStackTrace();
