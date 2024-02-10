@@ -75,6 +75,11 @@ public class AdbManager implements AutoCloseable {
                             this.shellObserver.ifPresent(s -> s.updateShell(line));
                             identifier = line;
                             this.shellResultObserver.ifPresent(this::submitResultingCommand);
+                            synchronized (commandWheel) {
+                                if (commandWheel.isEmpty()) {
+                                    commandWheel.notifyAll();
+                                }
+                            }
                             currentCommand = "";
                         } else {
                             buffer = line;
@@ -100,7 +105,7 @@ public class AdbManager implements AutoCloseable {
                         }
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             } catch (InterruptedException e) {
                 break;
             }
@@ -158,6 +163,7 @@ public class AdbManager implements AutoCloseable {
         Exception error = receiver.submit(() -> {
             try {
                 connect(context.getFilesDir());
+                shellReaderWorker.start();
                 return null;
             } catch (Exception e) {
                 return e;
@@ -172,70 +178,46 @@ public class AdbManager implements AutoCloseable {
     public AdbManager(Context context, ShellObserver shellObserver) throws AdbConnectionException, InterruptedException, ExecutionException {
         this(context);
         this.shellObserver = Optional.ofNullable(shellObserver);
-
-        String initialText = receiver.submit(() -> {
-            try {
-                return new String(shellStream.read(), StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                throw new AdbConnectionException(e);
-            }
-        }).get();
-        this.shellObserver.ifPresent(s -> s.updateShell(initialText));
-        shellReaderWorker.start();
     }
 
     public AdbManager(Context context, ShellResultObserver shellResultObserver) throws AdbConnectionException, InterruptedException, ExecutionException {
         this(context);
         this.shellResultObserver = Optional.ofNullable(shellResultObserver);
-
-        buffer = receiver.submit(() -> {
-            try {
-                return new String(shellStream.read(), StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                throw new AdbConnectionException(e);
-            }
-        }).get();
-        shellReaderWorker.start();
     }
 
     public AdbManager(Context context, ShellObserver shellObserver, ShellResultObserver shellResultObserver) throws AdbConnectionException, ExecutionException, InterruptedException {
         this(context);
         this.shellObserver = Optional.ofNullable(shellObserver);
         this.shellResultObserver = Optional.ofNullable(shellResultObserver);
-
-        String initialText = receiver.submit(() -> {
-            try {
-                return new String(shellStream.read(), StandardCharsets.UTF_8);
-            } catch (Exception e) {
-                throw new AdbConnectionException(e);
-            }
-        }).get();
-        this.shellObserver.ifPresent(s -> s.updateShell(initialText));
-        buffer = initialText;
-        shellReaderWorker.start();
     }
 
-    public void sendCommands(String... commands) throws AdbConnectionException {
+    public synchronized void sendCommands(String... commands) throws AdbConnectionException {
         if (!isConnected) {
             throw new AdbConnectionException(new Exception("Not connected anymore!"));
         }
         for (String command : commands) {
             if (command == null || command.isEmpty())
                 continue;
+            commandWheel.add(command);
             sender.submit(() -> {
                 String line = command + "\n";
                 try {
                     shellStream.write(line.getBytes(StandardCharsets.UTF_8), true);
-                    commandWheel.add(command);
                 } catch (IOException | InterruptedException e) {
+                    commandWheel.remove(command);
                     throw new RuntimeException(e);
                 }
             });
         }
     }
 
-    public void disconnect() throws IOException {
+    public void disconnect() throws IOException, InterruptedException {
         if (isConnected) {
+            synchronized (commandWheel) {
+                while (!commandWheel.isEmpty()) {
+                    commandWheel.wait();
+                }
+            }
             sender.shutdown();
             receiver.shutdown();
             isConnected = false;
