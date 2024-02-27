@@ -198,7 +198,18 @@ public class AdbManager implements AutoCloseable {
         for (String command : commands) {
             if (command == null || command.isEmpty())
                 continue;
-            commandWheel.add(command);
+
+            boolean isAcceptedCommand = true;
+            for (char c : command.toCharArray()) {
+                if (c < ' ' || c > '~') {
+                    isAcceptedCommand = false;
+                    break;
+                }
+            }
+
+            if (isAcceptedCommand) {
+                commandWheel.add(command);
+            }
             sender.submit(() -> {
                 String line = command + "\n";
                 try {
