@@ -25,6 +25,7 @@ import projekt.auto.mcu.adb.lib.AdbCrypto;
 import projekt.auto.mcu.adb.lib.AdbStream;
 
 public class AdbManager implements AutoCloseable {
+    public long TIMEOUT = 5000;
     private boolean isConnected = false;
     private Socket socket;
     private AdbConnection adbConnection;
@@ -208,7 +209,9 @@ public class AdbManager implements AutoCloseable {
             }
 
             if (isAcceptedCommand) {
-                commandWheel.add(command);
+                synchronized (commandWheel) {
+                    commandWheel.add(command);
+                }
             }
             sender.submit(() -> {
                 String line = command + "\n";
@@ -225,12 +228,10 @@ public class AdbManager implements AutoCloseable {
     public void disconnect() throws IOException, InterruptedException {
         if (isConnected) {
             synchronized (commandWheel) {
-                while (!commandWheel.isEmpty()) {
-                    commandWheel.wait();
-                }
+                commandWheel.wait(TIMEOUT);
             }
-            sender.shutdown();
-            receiver.shutdown();
+            sender.shutdownNow();
+            receiver.shutdownNow();
             isConnected = false;
             shellReaderWorker.interrupt();
             shellStream.close();
