@@ -129,6 +129,19 @@ public class AdbManager implements AutoCloseable {
         );
     }
 
+    private void connect(File filesDir, int portNumber) throws IOException, InterruptedException, NoSuchAlgorithmException {
+        if (isConnected) {
+            disconnect();
+        }
+        AdbCrypto adbCrypto = setupCrypto(filesDir);
+        socket = new Socket();
+        socket.connect(new InetSocketAddress("localhost", portNumber), 5000);
+        adbConnection = AdbConnection.create(socket, adbCrypto);
+        adbConnection.connect();
+        shellStream = adbConnection.open("shell:");
+        isConnected = true;
+    }
+
     private void connect(File filesDir) throws IOException, InterruptedException, NoSuchAlgorithmException {
         if (isConnected) {
             disconnect();
@@ -164,6 +177,22 @@ public class AdbManager implements AutoCloseable {
         Exception error = receiver.submit(() -> {
             try {
                 connect(context.getFilesDir());
+                shellReaderWorker.start();
+                return null;
+            } catch (Exception e) {
+                return e;
+            }
+        }).get();
+        if (error != null) {
+            isConnected = false;
+            throw new AdbConnectionException(error);
+        }
+    }
+
+    public AdbManager(Context context, int portNumber) throws AdbConnectionException, ExecutionException, InterruptedException {
+        Exception error = receiver.submit(() -> {
+            try {
+                connect(context.getFilesDir(), portNumber);
                 shellReaderWorker.start();
                 return null;
             } catch (Exception e) {
